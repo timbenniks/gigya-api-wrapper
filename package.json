@@ -1,0 +1,40 @@
+{
+  "name": "gigya-api-wrapper",
+  "version": "1.0.0",
+  "description": "A simple Gigya JS api wrapper which works with promises.",
+  "main": "lib/gigya.min.js",
+  "scripts": {
+    "build": "WEBPACK_ENV=build webpack --production",
+    "dev": "WEBPACK_ENV=dev webpack --progress --colors --watch",
+    "test": "npm run dev;open test/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/timbenniks/.git"
+  },
+  "keywords": [
+    "gigya",
+    "API Wrapper",
+    "promises"
+  ],
+  "author": "Tim Benniks",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/timbenniks//issues"
+  },
+  "homepage": "https://github.com/timbenniks/",
+  "dependencies": {
+    "babel": "6.5.2",
+    "babel-core": "6.17.0",
+    "babel-eslint": "7.0.0",
+    "babel-loader": "6.2.5",
+    "babel-plugin-add-module-exports": "0.2.1",
+    "babel-polyfill": "6.16.0",
+    "babel-preset-es2015": "6.16.0",
+    "es6-object-assign": "1.0.3",
+    "es6-promise": "4.0.5",
+    "eslint": "3.7.1",
+    "eslint-loader": "1.5.0",
+    "webpack": "1.13.2"
+  }
+}

@@ -2,7 +2,7 @@ var expect = chai.expect;
 
 var opts = {
   apiKey: '3_G0d_tqX9wnh3EHMZmLq_zbZTPppwnz4x1eZX8FuHkTELjV6HP-pJWzv7po9KZ6dB',
-  containerID: 'wrapper',
+  containerID: 'fixtures',
   screenSet: 'screen-set',
   lang: 'en',
   autoLogin: true,

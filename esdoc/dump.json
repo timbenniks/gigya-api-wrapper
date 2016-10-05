@@ -10,7 +10,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "require( 'es6-promise/auto' );\nrequire( 'es6-object-assign' ).polyfill();\n\n/**\n * GigyaWrapper API wrapper class\n * @class GigyaWrapper\n */\nexport default class GigyaWrapper{\n\n  constructor( options ){\n    this.apiKey = options.apiKey;\n    this.containerID = options.containerID || 'fixtures';\n    this.screenSet = options.screenSet || 'Default-RegistrationLogin';\n    this.lang = options.lang || 'en';\n    this.autoLogin = options.autoLogin || true;\n    this.debug = options.debug || false;\n\n    this.noop = ()=>{};\n\n    if( !this.apiKey ){\n      throw new Error( 'No API key given' );\n    }\n  }\n\n  onLibraryReady(){\n    return new Promise( ( resolve, reject )=>{\n      let script = document.createElement( 'script' );\n\n      script.type = 'text/javascript';\n      script.async = true;\n      script.src = `http://cdn.gigya.com/js/gigya.js?apiKey=${this.apiKey}&lang=${this.lang}`;\n      script.text = `{lang: \"${this.lang}\", autoLogin: ${this.autoLogin}`;\n\n      document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );\n\n      window.onGigyaServiceReady = ( serviceName )=>{\n        this.gigya = window.gigya;\n\n        if( this.debug ){\n          this.gigya.showDebugUI();\n        }\n\n        resolve( this.gigya );\n      };\n    } );\n  }\n\n  logout(){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.logout( {\n        callback: resolve\n      } );\n    } );\n  }\n\n  showLoginScreen( opts ){\n    this.showScreenSet( {\n      startScreen: 'gigya-login-screen'\n    } );\n  }\n\n  // http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages\n  // customLang: {}\n  showScreenSet( opts ){\n    let screensetProps = Object.assign( {\n      screenSet: this.screenSet,\n      containerID: this.containerID,\n      startScreen: 'gigya-login-screen',\n      customLang: {},\n      onBeforeScreenLoad: this.noop,\n      onAfterScreenLoad: this.noop,\n      onAfterSubmit: this.noop,\n      onBeforeSubmit: this.noop,\n      onFieldChanged: this.noop\n    }, opts );\n\n    this.gigya.accounts.showScreenSet( screensetProps );\n  }\n\n  hideScreenSet( opts ){\n    let screensetProps = Object.assign( {\n      screenSet: this.screenSet,\n      containerID: this.containerID\n    }, opts );\n\n    this.gigya.accounts.hideScreenSet( screensetProps );\n  }\n\n  registerEventListeners( eventListeners ){\n    let listeners = Object.assign( {\n      onLogin: this.noop,\n      onLogout: this.noop,\n      onConnectionAdded: this.noop,\n      onConnectionRemoved: this.noop,\n      onLinkback: this.noop\n    }, eventListeners );\n\n    this.gigya.accounts.addEventHandlers( listeners );\n  }\n\n  getAccountInfo( include = 'profile, data' ){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.getAccountInfo( {\n        include: include,\n        callback: ( response )=>{\n          if( response.errorCode === 0 ){\n            resolve( response );\n          } else {\n            reject( { code: response.errorCode, error: response.errorMessage, status: response.status } );\n          }\n        }\n      } );\n    } );\n  }\n\n  checkLoggedInStatus(){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.getAccountInfo( {\n        callback: ( response )=>{\n          let result = {\n            loggedIn: ( response.errorCode === 0 ),\n            errorCode: response.errorCode,\n            errorMessage: response.errorMessage,\n            rawResponse: response\n          };\n\n          resolve( result );\n        }\n      } );\n    } );\n  }\n\n  share( opts ){\n    let shareProps = Object.assign( {\n      provider: 'facebook',\n      url: '',\n      title: '',\n      subtitle: '',\n      description: '',\n      imageurl: '',\n      actionAttributes: {},\n      popupHeight: 300,\n      popupWidth: 400,\n      providerKey: false,\n      shortURLs: 'never',\n      facebookDialogType: 'feed',\n      tags: false,\n      target: false\n    }, opts );\n\n    let userAction = new this.gigya.socialize.UserAction();\n\n    userAction.setLinkBack( shareProps.url );\n    userAction.setTitle( shareProps.title );\n    userAction.setSubtitle( shareProps.subtitle );\n    userAction.setDescription( shareProps.description );\n    userAction.addActionLink( shareProps.title, shareProps.url );\n\n    userAction.addMediaItem( {\n      type: 'image',\n      src: shareProps.imageurl,\n      href: shareProps.url\n    } );\n\n    shareProps.userAction = userAction;\n    shareProps.cid = `${shareProps.provider} share`;\n\n    this.gigya.socialize.postBookmark( shareProps );\n  }\n\n  getSchema( opts ){\n    return new Promise( ( resolve, reject )=>{\n      let schemaProps = Object.assign( {\n        context: {},\n        callback: ( response )=> this.cb( resolve, reject, response )\n      }, opts );\n\n      this.gigya.accounts.getSchema( schemaProps );\n    } );\n  }\n\n  getPolicies( opts ){\n    return new Promise( ( resolve, reject )=>{\n      let policiesProps = Object.assign( {\n        sections: 'registration,gigyaPlugins,passwordComplexity,security',\n        context: {},\n        callback: ( response )=> this.cb( resolve, reject, response )\n      }, opts );\n\n      this.gigya.accounts.getPolicies( policiesProps );\n    } );\n  }\n\n  getScreenSets( opts ){\n    return new Promise( ( resolve, reject )=>{\n      let screenSetsProps = Object.assign( {\n        screenSetIDs: 'Default-RegistrationLogin',\n        include: 'Default-RegistrationLogin,html,css',\n        context: {},\n        callback: ( response )=> this.cb( resolve, reject, response )\n      }, opts );\n\n      this.gigya.accounts.getScreenSets( screenSetsProps );\n    } );\n  }\n\n  cb( resolve, reject, response ){\n    if( response.status !== 'OK' ){\n      reject( { code: response.errorCode, error: response.errorMessage, details: response.errorDetails, status: response.status } );\n    }\n    resolve( response );\n  }\n}\n"
+    "content": "require( 'es6-promise/auto' );\nrequire( 'es6-object-assign' ).polyfill();\n\n/**\n * GigyaWrapper API wrapper class\n * @class GigyaWrapper\n */\nexport default class GigyaWrapper{\n\n  /**\n   * GigyaWrapper constructor.\n   * @param {object} options Object of options\n   * @constructs GigyaWrapper\n   */\n  constructor( options ){\n    /**\n     * API key for Gigya.\n     * @member GigyaWrapper#apiKey\n     */\n    this.apiKey = options.apiKey;\n\n    /**\n     * DOM node to use for screensets\n     * Defaults to wrapper\n     * @member GigyaWrapper#containerID\n     */\n    this.containerID = options.containerID || 'wrapper';\n\n    /**\n     * Which screen set to use\n     * Defaults to Default-RegistrationLogin\n     * @member GigyaWrapper#screenSet\n     */\n    this.screenSet = options.screenSet || 'Default-RegistrationLogin';\n\n\n    /**\n     * Language of error messages\n     * Defaults to en\n     * @member GigyaWrapper#lang\n     */\n    this.lang = options.lang || 'en';\n\n    /**\n     * Try to automatically login a user\n     * Defaults to true\n     * @member GigyaWrapper#autoLogin\n     */\n    this.autoLogin = options.autoLogin || true;\n\n    /**\n     * Add a debug panel to the page\n     * Defaults to false\n     * @member GigyaWrapper#debug\n     */\n    this.debug = options.debug || false;\n\n    this.noop = ()=>{};\n\n    if( !this.apiKey ){\n      throw new Error( 'No API key given' );\n    }\n  }\n\n  onLibraryReady(){\n    return new Promise( ( resolve, reject )=>{\n      let script = document.createElement( 'script' );\n\n      script.type = 'text/javascript';\n      script.async = true;\n      script.src = `http://cdn.gigya.com/js/gigya.js?apiKey=${this.apiKey}&lang=${this.lang}`;\n      script.text = `{lang: \"${this.lang}\", autoLogin: ${this.autoLogin}`;\n\n      document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );\n\n      window.onGigyaServiceReady = ( serviceName )=>{\n        this.gigya = window.gigya;\n\n        if( this.debug ){\n          this.gigya.showDebugUI();\n        }\n\n        resolve( this.gigya );\n      };\n    } );\n  }\n\n  logout(){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.logout( {\n        callback: resolve\n      } );\n    } );\n  }\n\n  showLoginScreen( opts ){\n    this.showScreenSet( {\n      startScreen: 'gigya-login-screen'\n    } );\n  }\n\n  // http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages\n  // customLang: {}\n  showScreenSet( opts ){\n    let screensetProps = Object.assign( {\n      screenSet: this.screenSet,\n      containerID: this.containerID,\n      startScreen: 'gigya-login-screen',\n      customLang: {},\n      onBeforeScreenLoad: this.noop,\n      onAfterScreenLoad: this.noop,\n      onAfterSubmit: this.noop,\n      onBeforeSubmit: this.noop,\n      onFieldChanged: this.noop\n    }, opts );\n\n    this.gigya.accounts.showScreenSet( screensetProps );\n  }\n\n  hideScreenSet( opts ){\n    let screensetProps = Object.assign( {\n      screenSet: this.screenSet,\n      containerID: this.containerID\n    }, opts );\n\n    this.gigya.accounts.hideScreenSet( screensetProps );\n  }\n\n  registerEventListeners( eventListeners ){\n    let listeners = Object.assign( {\n      onLogin: this.noop,\n      onLogout: this.noop,\n      onConnectionAdded: this.noop,\n      onConnectionRemoved: this.noop,\n      onLinkback: this.noop\n    }, eventListeners );\n\n    this.gigya.accounts.addEventHandlers( listeners );\n  }\n\n  getAccountInfo( include = 'profile, data' ){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.getAccountInfo( {\n        include: include,\n        callback: ( response )=>{\n          if( response.errorCode === 0 ){\n            resolve( response );\n          } else {\n            reject( { code: response.errorCode, error: response.errorMessage, status: response.status } );\n          }\n        }\n      } );\n    } );\n  }\n\n  checkLoggedInStatus(){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.getAccountInfo( {\n        callback: ( response )=>{\n          let result = {\n            loggedIn: ( response.errorCode === 0 ),\n            errorCode: response.errorCode,\n            errorMessage: response.errorMessage,\n            rawResponse: response\n          };\n\n          resolve( result );\n        }\n      } );\n    } );\n  }\n\n  share( opts ){\n    let shareProps = Object.assign( {\n      provider: 'facebook',\n      url: '',\n      title: '',\n      subtitle: '',\n      description: '',\n      imageurl: '',\n      actionAttributes: {},\n      popupHeight: 300,\n      popupWidth: 400,\n      providerKey: false,\n      shortURLs: 'never',\n      facebookDialogType: 'feed',\n      tags: false,\n      target: false\n    }, opts );\n\n    let userAction = new this.gigya.socialize.UserAction();\n\n    userAction.setLinkBack( shareProps.url );\n    userAction.setTitle( shareProps.title );\n    userAction.setSubtitle( shareProps.subtitle );\n    userAction.setDescription( shareProps.description );\n    userAction.addActionLink( shareProps.title, shareProps.url );\n\n    userAction.addMediaItem( {\n      type: 'image',\n      src: shareProps.imageurl,\n      href: shareProps.url\n    } );\n\n    shareProps.userAction = userAction;\n    shareProps.cid = `${shareProps.provider} share`;\n\n    this.gigya.socialize.postBookmark( shareProps );\n  }\n\n  getSchema( opts ){\n    return new Promise( ( resolve, reject )=>{\n      let schemaProps = Object.assign( {\n        context: {},\n        callback: ( response )=> this.cb( resolve, reject, response )\n      }, opts );\n\n      this.gigya.accounts.getSchema( schemaProps );\n    } );\n  }\n\n  getPolicies( opts ){\n    return new Promise( ( resolve, reject )=>{\n      let policiesProps = Object.assign( {\n        sections: 'registration,gigyaPlugins,passwordComplexity,security',\n        context: {},\n        callback: ( response )=> this.cb( resolve, reject, response )\n      }, opts );\n\n      this.gigya.accounts.getPolicies( policiesProps );\n    } );\n  }\n\n  getScreenSets( opts ){\n    return new Promise( ( resolve, reject )=>{\n      let screenSetsProps = Object.assign( {\n        screenSetIDs: 'Default-RegistrationLogin',\n        include: 'Default-RegistrationLogin,html,css',\n        context: {},\n        callback: ( response )=> this.cb( resolve, reject, response )\n      }, opts );\n\n      this.gigya.accounts.getScreenSets( screenSetsProps );\n    } );\n  }\n\n  cb( resolve, reject, response ){\n    if( response.status !== 'OK' ){\n      reject( { code: response.errorCode, error: response.errorMessage, details: response.errorDetails, status: response.status } );\n    }\n    resolve( response );\n  }\n}\n"
   },
   {
     "__docId__": 1,
@@ -43,15 +43,24 @@
     "memberof": "src/index.js~GigyaWrapper",
     "longname": "src/index.js~GigyaWrapper#constructor",
     "access": null,
-    "description": null,
-    "lineNumber": 10,
-    "undocument": true,
+    "description": "GigyaWrapper constructor.",
+    "lineNumber": 15,
+    "unknown": [
+      {
+        "tagName": "@constructs",
+        "tagValue": "GigyaWrapper"
+      }
+    ],
     "params": [
       {
-        "name": "options",
+        "nullable": null,
         "types": [
-          "*"
-        ]
+          "object"
+        ],
+        "spread": false,
+        "optional": false,
+        "name": "options",
+        "description": "Object of options"
       }
     ],
     "generator": false
@@ -65,9 +74,14 @@
     "memberof": "src/index.js~GigyaWrapper",
     "longname": "src/index.js~GigyaWrapper#apiKey",
     "access": null,
-    "description": null,
-    "lineNumber": 11,
-    "undocument": true,
+    "description": "API key for Gigya.",
+    "lineNumber": 20,
+    "unknown": [
+      {
+        "tagName": "@member",
+        "tagValue": "GigyaWrapper#apiKey"
+      }
+    ],
     "type": {
       "types": [
         "*"
@@ -83,9 +97,14 @@
     "memberof": "src/index.js~GigyaWrapper",
     "longname": "src/index.js~GigyaWrapper#containerID",
     "access": null,
-    "description": null,
-    "lineNumber": 12,
-    "undocument": true,
+    "description": "DOM node to use for screensets\nDefaults to wrapper",
+    "lineNumber": 27,
+    "unknown": [
+      {
+        "tagName": "@member",
+        "tagValue": "GigyaWrapper#containerID"
+      }
+    ],
     "type": {
       "types": [
         "*"
@@ -101,9 +120,14 @@
     "memberof": "src/index.js~GigyaWrapper",
     "longname": "src/index.js~GigyaWrapper#screenSet",
     "access": null,
-    "description": null,
-    "lineNumber": 13,
-    "undocument": true,
+    "description": "Which screen set to use\nDefaults to Default-RegistrationLogin",
+    "lineNumber": 34,
+    "unknown": [
+      {
+        "tagName": "@member",
+        "tagValue": "GigyaWrapper#screenSet"
+      }
+    ],
     "type": {
       "types": [
         "*"
@@ -119,9 +143,14 @@
     "memberof": "src/index.js~GigyaWrapper",
     "longname": "src/index.js~GigyaWrapper#lang",
     "access": null,
-    "description": null,
-    "lineNumber": 14,
-    "undocument": true,
+    "description": "Language of error messages\nDefaults to en",
+    "lineNumber": 42,
+    "unknown": [
+      {
+        "tagName": "@member",
+        "tagValue": "GigyaWrapper#lang"
+      }
+    ],
     "type": {
       "types": [
         "*"
@@ -137,9 +166,14 @@
     "memberof": "src/index.js~GigyaWrapper",
     "longname": "src/index.js~GigyaWrapper#autoLogin",
     "access": null,
-    "description": null,
-    "lineNumber": 15,
-    "undocument": true,
+    "description": "Try to automatically login a user\nDefaults to true",
+    "lineNumber": 49,
+    "unknown": [
+      {
+        "tagName": "@member",
+        "tagValue": "GigyaWrapper#autoLogin"
+      }
+    ],
     "type": {
       "types": [
         "*"
@@ -155,9 +189,14 @@
     "memberof": "src/index.js~GigyaWrapper",
     "longname": "src/index.js~GigyaWrapper#debug",
     "access": null,
-    "description": null,
-    "lineNumber": 16,
-    "undocument": true,
+    "description": "Add a debug panel to the page\nDefaults to false",
+    "lineNumber": 56,
+    "unknown": [
+      {
+        "tagName": "@member",
+        "tagValue": "GigyaWrapper#debug"
+      }
+    ],
     "type": {
       "types": [
         "*"
@@ -174,7 +213,7 @@
     "longname": "src/index.js~GigyaWrapper#noop",
     "access": null,
     "description": null,
-    "lineNumber": 18,
+    "lineNumber": 58,
     "undocument": true,
     "type": {
       "types": [
@@ -192,7 +231,7 @@
     "longname": "src/index.js~GigyaWrapper#onLibraryReady",
     "access": null,
     "description": null,
-    "lineNumber": 25,
+    "lineNumber": 65,
     "undocument": true,
     "params": [],
     "return": {
@@ -212,7 +251,7 @@
     "longname": "src/index.js~GigyaWrapper#gigya",
     "access": null,
     "description": null,
-    "lineNumber": 37,
+    "lineNumber": 77,
     "undocument": true,
     "type": {
       "types": [
@@ -230,7 +269,7 @@
     "longname": "src/index.js~GigyaWrapper#logout",
     "access": null,
     "description": null,
-    "lineNumber": 48,
+    "lineNumber": 88,
     "undocument": true,
     "params": [],
     "return": {
@@ -250,7 +289,7 @@
     "longname": "src/index.js~GigyaWrapper#showLoginScreen",
     "access": null,
     "description": null,
-    "lineNumber": 56,
+    "lineNumber": 96,
     "undocument": true,
     "params": [
       {
@@ -272,7 +311,7 @@
     "longname": "src/index.js~GigyaWrapper#showScreenSet",
     "access": null,
     "description": null,
-    "lineNumber": 64,
+    "lineNumber": 104,
     "undocument": true,
     "params": [
       {
@@ -294,7 +333,7 @@
     "longname": "src/index.js~GigyaWrapper#hideScreenSet",
     "access": null,
     "description": null,
-    "lineNumber": 80,
+    "lineNumber": 120,
     "undocument": true,
     "params": [
       {
@@ -316,7 +355,7 @@
     "longname": "src/index.js~GigyaWrapper#registerEventListeners",
     "access": null,
     "description": null,
-    "lineNumber": 89,
+    "lineNumber": 129,
     "undocument": true,
     "params": [
       {
@@ -338,7 +377,7 @@
     "longname": "src/index.js~GigyaWrapper#getAccountInfo",
     "access": null,
     "description": null,
-    "lineNumber": 101,
+    "lineNumber": 141,
     "undocument": true,
     "params": [
       {
@@ -368,7 +407,7 @@
     "longname": "src/index.js~GigyaWrapper#checkLoggedInStatus",
     "access": null,
     "description": null,
-    "lineNumber": 116,
+    "lineNumber": 156,
     "undocument": true,
     "params": [],
     "return": {
@@ -388,7 +427,7 @@
     "longname": "src/index.js~GigyaWrapper#share",
     "access": null,
     "description": null,
-    "lineNumber": 133,
+    "lineNumber": 173,
     "undocument": true,
     "params": [
       {
@@ -410,7 +449,7 @@
     "longname": "src/index.js~GigyaWrapper#getSchema",
     "access": null,
     "description": null,
-    "lineNumber": 171,
+    "lineNumber": 211,
     "undocument": true,
     "params": [
       {
@@ -437,7 +476,7 @@
     "longname": "src/index.js~GigyaWrapper#getPolicies",
     "access": null,
     "description": null,
-    "lineNumber": 182,
+    "lineNumber": 222,
     "undocument": true,
     "params": [
       {
@@ -464,7 +503,7 @@
     "longname": "src/index.js~GigyaWrapper#getScreenSets",
     "access": null,
     "description": null,
-    "lineNumber": 194,
+    "lineNumber": 234,
     "undocument": true,
     "params": [
       {
@@ -491,7 +530,7 @@
     "longname": "src/index.js~GigyaWrapper#cb",
     "access": null,
     "description": null,
-    "lineNumber": 207,
+    "lineNumber": 247,
     "undocument": true,
     "params": [
       {

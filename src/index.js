@@ -2,17 +2,57 @@ require( 'es6-promise/auto' );
 require( 'es6-object-assign' ).polyfill();
 
 /**
- * GigyaWrapper API wrapper class
+ * GigyaWrapper JS API wrapper class
  * @class GigyaWrapper
  */
 export default class GigyaWrapper{
 
+  /**
+   * GigyaWrapper constructor.
+   * @param {object} options Object of options
+   * @constructs GigyaWrapper
+   */
   constructor( options ){
+    /**
+     * API key for Gigya.
+     * @member GigyaWrapper#apiKey
+     */
     this.apiKey = options.apiKey;
-    this.containerID = options.containerID || 'fixtures';
+
+    /**
+     * DOM node to use for screensets
+     * Defaults to wrapper
+     * @member GigyaWrapper#containerID
+     */
+    this.containerID = options.containerID || 'wrapper';
+
+    /**
+     * Which screen set to use
+     * Defaults to Default-RegistrationLogin
+     * @member GigyaWrapper#screenSet
+     */
     this.screenSet = options.screenSet || 'Default-RegistrationLogin';
+
+
+    /**
+     * Language of error messages
+     * Defaults to en
+     * @member GigyaWrapper#lang
+     */
     this.lang = options.lang || 'en';
+
+    /**
+     * Try to automatically login a user
+     * Defaults to true
+     * @member GigyaWrapper#autoLogin
+     */
     this.autoLogin = options.autoLogin || true;
+
+    /**
+     * Add a debug panel to the page
+     * Defaults to false
+     * @member GigyaWrapper#debug
+     */
     this.debug = options.debug || false;
 
     this.noop = ()=>{};

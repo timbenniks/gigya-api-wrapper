@@ -30,14 +30,14 @@ this.gigyaWrapperInstance.onLibraryReady().then( ()=>{
     onLinkback: ()=>{}
   });
 
-  // Helper functions
-  this.gigyaWrapperInstance.checkLoggedInStatus().then( ( response )=>{} );
-  this.gigyaWrapperInstance.getAccountInfo().then( ( response )=>{} );
-  this.gigyaWrapperInstance.logout().then( ( response )=>{} );
+  // Helper functions (all return promises)
+  this.gigyaWrapperInstance.checkLoggedInStatus();
+  this.gigyaWrapperInstance.getAccountInfo();
+  this.gigyaWrapperInstance.logout();
 
-  this.gigyaWrapperInstance.getSchema().then( ( response )=>{} );
-  this.gigyaWrapperInstance.getPolicies().then( ( response )=>{} );
-  this.gigyaWrapperInstance.getScreenSets().then( ( response )=>{} );
+  this.gigyaWrapperInstance.getSchema();
+  this.gigyaWrapperInstance.getPolicies();
+  this.gigyaWrapperInstance.getScreenSets();
 
   //Screensets
   this.gigyaWrapperInstance.showLoginScreen();

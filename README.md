@@ -31,13 +31,13 @@ this.gigyaWrapperInstance.onLibraryReady().then( ()=>{
   });
 
   // Helper functions
-  this.gigyaWrapperInstance.checkLoggedInStatus().then( ( response )=>{ /* do something */ } );
-  this.gigyaWrapperInstance.getAccountInfo().then( ( response )=>{ /* do something */ } );
-  this.gigyaWrapperInstance.logout().then( ( response )=>{ /* do something */ } );
+  this.gigyaWrapperInstance.checkLoggedInStatus().then( ( response )=>{} );
+  this.gigyaWrapperInstance.getAccountInfo().then( ( response )=>{} );
+  this.gigyaWrapperInstance.logout().then( ( response )=>{} );
 
-  this.gigyaWrapperInstance.getSchema().then( ( response )=>{ /* do something */ } );
-  this.gigyaWrapperInstance.getPolicies().then( ( response )=>{ /* do something */ } );
-  this.gigyaWrapperInstance.getScreenSets().then( ( response )=>{ /* do something */ } );
+  this.gigyaWrapperInstance.getSchema().then( ( response )=>{} );
+  this.gigyaWrapperInstance.getPolicies().then( ( response )=>{} );
+  this.gigyaWrapperInstance.getScreenSets().then( ( response )=>{} );
 
   //Screensets
   this.gigyaWrapperInstance.showLoginScreen();

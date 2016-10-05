@@ -23,17 +23,41 @@ this.gigyaWrapperInstance.onLibraryReady().then( ()=>{
 
   // Listen to user events
   this.gigyaWrapperInstance.registerEventListeners({
-    onLogin: ( userData )=>{ /* do something */ },
-    onLogout: ()=>{ /* do something */ }
+    onLogin: ( userData )=>{},
+    onLogout: ()=>{},
+    onConnectionAdded: ()=>{},
+    onConnectionRemoved: ()=>{},
+    onLinkback: ()=>{}
   });
 
   this.gigyaWrapperInstance.checkLoggedInStatus().then( ( response )=>{ /* do something */ } );
+  this.gigyaWrapperInstance.getAccountInfo().then( ( response )=>{ /* do something */ } );
 
   // Helper functions
   this.gigyaWrapperInstance.logout().then( ( response )=>{ /* do something */ } );
   this.gigyaWrapperInstance.getSchema().then( ( response )=>{ /* do something */ } );
   this.gigyaWrapperInstance.getPolicies().then( ( response )=>{ /* do something */ } );
   this.gigyaWrapperInstance.getScreenSets().then( ( response )=>{ /* do something */ } );
+
+  //Screensets
+  this.gigyaWrapperInstance.showLoginScreen();
+  this.gigyaWrapperInstance.showScreenSet({
+    screenSet: 'screen-set', // Does not have to be set as the code will use the screenSet provided in the options. With this you can overwrite it.
+    containerID: 'wrapper', // Does not have to be set as the code will use the containerID provided in the options. With this you can overwrite it.
+    startScreen: 'gigya-login-screen', // which screen to start with in the screenSet.
+    customLang: {}, // overwrite error messages
+    onBeforeScreenLoad: ()=>{},
+    onAfterScreenLoad: ()=>{},
+    onAfterSubmit: ()=>{},
+    onBeforeSubmit: ()=>{},
+    onFieldChanged:  ()=>{}
+  });
+
+  this.gigyaWrapperInstance.hideScreenSet({
+    screenSet: 'screen-set', // Does not have to be set as the code will use the screenSet provided in the options. With this you can overwrite it.
+    containerID: 'wrapper', // Does not have to be set as the code will use the containerID provided in the options. With this you can overwrite it.
+  });
+
 
   // Sharing
   this.gigyaWrapperInstance.share({

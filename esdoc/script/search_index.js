@@ -1,8 +1,8 @@
 window.esdocSearchIndex = [
   [
-    "gpx-for-runners/src/index.js~gpx",
-    "class/src/index.js~GPX.html",
-    "<span>GPX</span> <span class=\"search-result-import-path\">gpx-for-runners/src/index.js</span>",
+    "gigya-api-wrapper/src/index.js~gigyawrapper",
+    "class/src/index.js~GigyaWrapper.html",
+    "<span>GigyaWrapper</span> <span class=\"search-result-import-path\">gigya-api-wrapper/src/index.js</span>",
     "class"
   ],
   [
@@ -342,99 +342,135 @@ window.esdocSearchIndex = [
     "file"
   ],
   [
-    "src/index.js~gpx#calcdistancebetweenpoints",
-    "class/src/index.js~GPX.html#instance-method-calcDistanceBetweenPoints",
-    "src/index.js~GPX#calcDistanceBetweenPoints",
-    "method"
-  ],
-  [
-    "src/index.js~gpx#constructor",
-    "class/src/index.js~GPX.html#instance-constructor-constructor",
-    "src/index.js~GPX#constructor",
-    "method"
-  ],
-  [
-    "src/index.js~gpx#createjsonfromgpxdom",
-    "class/src/index.js~GPX.html#instance-method-createJsonFromGpxDom",
-    "src/index.js~GPX#createJsonFromGpxDom",
-    "method"
-  ],
-  [
-    "src/index.js~gpx#distance",
-    "class/src/index.js~GPX.html#instance-method-distance",
-    "src/index.js~GPX#distance",
-    "method"
-  ],
-  [
-    "src/index.js~gpx#duration",
-    "class/src/index.js~GPX.html#instance-method-duration",
-    "src/index.js~GPX#duration",
-    "method"
-  ],
-  [
-    "src/index.js~gpx#elevation",
-    "class/src/index.js~GPX.html#instance-method-elevation",
-    "src/index.js~GPX#elevation",
-    "method"
-  ],
-  [
-    "src/index.js~gpx#gpxcontent",
-    "class/src/index.js~GPX.html#instance-member-gpxContent",
-    "src/index.js~GPX#gpxContent",
+    "src/index.js~gigyawrapper#apikey",
+    "class/src/index.js~GigyaWrapper.html#instance-member-apiKey",
+    "src/index.js~GigyaWrapper#apiKey",
     "member"
   ],
   [
-    "src/index.js~gpx#millisecondstotime",
-    "class/src/index.js~GPX.html#instance-method-millisecondsToTime",
-    "src/index.js~GPX#millisecondsToTime",
+    "src/index.js~gigyawrapper#autologin",
+    "class/src/index.js~GigyaWrapper.html#instance-member-autoLogin",
+    "src/index.js~GigyaWrapper#autoLogin",
+    "member"
+  ],
+  [
+    "src/index.js~gigyawrapper#cb",
+    "class/src/index.js~GigyaWrapper.html#instance-method-cb",
+    "src/index.js~GigyaWrapper#cb",
     "method"
   ],
   [
-    "src/index.js~gpx#pace",
-    "class/src/index.js~GPX.html#instance-method-pace",
-    "src/index.js~GPX#pace",
+    "src/index.js~gigyawrapper#checkloggedinstatus",
+    "class/src/index.js~GigyaWrapper.html#instance-method-checkLoggedInStatus",
+    "src/index.js~GigyaWrapper#checkLoggedInStatus",
     "method"
   ],
   [
-    "src/index.js~gpx#trackpoints",
-    "class/src/index.js~GPX.html#instance-member-trackpoints",
-    "src/index.js~GPX#trackpoints",
+    "src/index.js~gigyawrapper#constructor",
+    "class/src/index.js~GigyaWrapper.html#instance-constructor-constructor",
+    "src/index.js~GigyaWrapper#constructor",
+    "method"
+  ],
+  [
+    "src/index.js~gigyawrapper#containerid",
+    "class/src/index.js~GigyaWrapper.html#instance-member-containerID",
+    "src/index.js~GigyaWrapper#containerID",
     "member"
   ],
   [
-    "src/index.js~gpx#trkpts",
-    "class/src/index.js~GPX.html#instance-member-trkpts",
-    "src/index.js~GPX#trkpts",
+    "src/index.js~gigyawrapper#debug",
+    "class/src/index.js~GigyaWrapper.html#instance-member-debug",
+    "src/index.js~GigyaWrapper#debug",
     "member"
   ],
   [
-    "src/index.js~gpx#xmldoc",
-    "class/src/index.js~GPX.html#instance-member-xmlDoc",
-    "src/index.js~GPX#xmlDoc",
+    "src/index.js~gigyawrapper#getaccountinfo",
+    "class/src/index.js~GigyaWrapper.html#instance-method-getAccountInfo",
+    "src/index.js~GigyaWrapper#getAccountInfo",
+    "method"
+  ],
+  [
+    "src/index.js~gigyawrapper#getpolicies",
+    "class/src/index.js~GigyaWrapper.html#instance-method-getPolicies",
+    "src/index.js~GigyaWrapper#getPolicies",
+    "method"
+  ],
+  [
+    "src/index.js~gigyawrapper#getschema",
+    "class/src/index.js~GigyaWrapper.html#instance-method-getSchema",
+    "src/index.js~GigyaWrapper#getSchema",
+    "method"
+  ],
+  [
+    "src/index.js~gigyawrapper#getscreensets",
+    "class/src/index.js~GigyaWrapper.html#instance-method-getScreenSets",
+    "src/index.js~GigyaWrapper#getScreenSets",
+    "method"
+  ],
+  [
+    "src/index.js~gigyawrapper#gigya",
+    "class/src/index.js~GigyaWrapper.html#instance-member-gigya",
+    "src/index.js~GigyaWrapper#gigya",
     "member"
   ],
   [
-    "src/index.js~gpx.duration",
-    "typedef/index.html#static-typedef-Duration",
-    "src/index.js~GPX.Duration",
-    "typedef"
+    "src/index.js~gigyawrapper#hidescreenset",
+    "class/src/index.js~GigyaWrapper.html#instance-method-hideScreenSet",
+    "src/index.js~GigyaWrapper#hideScreenSet",
+    "method"
   ],
   [
-    "src/index.js~gpx.elevation",
-    "typedef/index.html#static-typedef-Elevation",
-    "src/index.js~GPX.Elevation",
-    "typedef"
+    "src/index.js~gigyawrapper#lang",
+    "class/src/index.js~GigyaWrapper.html#instance-member-lang",
+    "src/index.js~GigyaWrapper#lang",
+    "member"
   ],
   [
-    "src/index.js~gpx.pace",
-    "typedef/index.html#static-typedef-Pace",
-    "src/index.js~GPX.Pace",
-    "typedef"
+    "src/index.js~gigyawrapper#logout",
+    "class/src/index.js~GigyaWrapper.html#instance-method-logout",
+    "src/index.js~GigyaWrapper#logout",
+    "method"
   ],
   [
-    "src/index.js~gpx.trackpoint",
-    "typedef/index.html#static-typedef-TrackPoint",
-    "src/index.js~GPX.TrackPoint",
-    "typedef"
+    "src/index.js~gigyawrapper#noop",
+    "class/src/index.js~GigyaWrapper.html#instance-member-noop",
+    "src/index.js~GigyaWrapper#noop",
+    "member"
+  ],
+  [
+    "src/index.js~gigyawrapper#onlibraryready",
+    "class/src/index.js~GigyaWrapper.html#instance-method-onLibraryReady",
+    "src/index.js~GigyaWrapper#onLibraryReady",
+    "method"
+  ],
+  [
+    "src/index.js~gigyawrapper#registereventlisteners",
+    "class/src/index.js~GigyaWrapper.html#instance-method-registerEventListeners",
+    "src/index.js~GigyaWrapper#registerEventListeners",
+    "method"
+  ],
+  [
+    "src/index.js~gigyawrapper#screenset",
+    "class/src/index.js~GigyaWrapper.html#instance-member-screenSet",
+    "src/index.js~GigyaWrapper#screenSet",
+    "member"
+  ],
+  [
+    "src/index.js~gigyawrapper#share",
+    "class/src/index.js~GigyaWrapper.html#instance-method-share",
+    "src/index.js~GigyaWrapper#share",
+    "method"
+  ],
+  [
+    "src/index.js~gigyawrapper#showloginscreen",
+    "class/src/index.js~GigyaWrapper.html#instance-method-showLoginScreen",
+    "src/index.js~GigyaWrapper#showLoginScreen",
+    "method"
+  ],
+  [
+    "src/index.js~gigyawrapper#showscreenset",
+    "class/src/index.js~GigyaWrapper.html#instance-method-showScreenSet",
+    "src/index.js~GigyaWrapper#showScreenSet",
+    "method"
   ]
 ]

@@ -19,7 +19,7 @@
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/timbenniks/gpx-for-runners.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/timbenniks/.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -32,239 +32,223 @@
 <nav class="navigation" data-ice="nav"><div>
   <ul>
     
-  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/index.js~GPX.html">GPX</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Duration">Duration</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Elevation">Elevation</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-Pace">Pace</a></span></span></li>
-<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-TrackPoint">TrackPoint</a></span></span></li>
+  <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html">GigyaWrapper</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><h1 data-ice="title">src/index.js</h1>
-<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">/**
- * GPX parser class
- * @class GPX
+<pre class="source-code line-number raw-source-code"><code class="prettyprint linenums" data-ice="content">require( &apos;es6-promise/auto&apos; );
+require( &apos;es6-object-assign&apos; ).polyfill();
+
+/**
+ * GigyaWrapper API wrapper class
+ * @class GigyaWrapper
  */
-export default class GPX{
+export default class GigyaWrapper{
 
-  /**
-   * GPX constructor.
-   * @param {string} gpxContent String of gpx XML data.
-   * @constructs GPX
-   */
-  constructor( gpxContent ){
-    /**
-     * string of gpx XML data.
-     * @member GPX#gpxContent
-     */
-    this.gpxContent = gpxContent;
+  constructor( options ){
+    this.apiKey = options.apiKey;
+    this.containerID = options.containerID || &apos;fixtures&apos;;
+    this.screenSet = options.screenSet || &apos;Default-RegistrationLogin&apos;;
+    this.lang = options.lang || &apos;en&apos;;
+    this.autoLogin = options.autoLogin || true;
+    this.debug = options.debug || false;
 
-    /**
-     * The parsed gpx string into a DOM object.
-     * @member GPX#xmlDoc
-     */
-    this.xmlDoc = new DOMParser().parseFromString( this.gpxContent, &apos;application/xml&apos; );
+    this.noop = ()=&gt;{};
 
-    /**
-     * Object of all trackpoints in the gpx DOM.
-     * @member GPX#trkpts
-     */
-    this.trkpts = this.xmlDoc.querySelectorAll( &apos;trkpt&apos; );
-
-    /**
-     * All trackpoints as an Array
-     * @member GPX#trackpoints
-     */
-    this.trackpoints = this.createJsonFromGpxDom();
-
-    if( this.trackpoints.length === 0 ){
-      throw new Error( &apos;This file has no trackpoints (trkpt)&apos; );
+    if( !this.apiKey ){
+      throw new Error( &apos;No API key given&apos; );
     }
   }
 
-  /**
-   * @typedef TrackPoint
-   * @type Object
-   * @property {number} lon The lon coordinate of the trackpoint
-   * @property {number} lat The lat coordinate of the trackpoint
-   * @property {number} elevation The elevation in meters of the trackpoint
-   * @property {string} time The time of the trackpoint
-   */
+  onLibraryReady(){
+    return new Promise( ( resolve, reject )=&gt;{
+      let script = document.createElement( &apos;script&apos; );
 
-  /**
-   * Loops over gpx DOM and returns array of objects
-   * @return {TrackPoint} The trackpoint data
-   */
-  createJsonFromGpxDom(){
-    let trackpoints = [];
+      script.type = &apos;text/javascript&apos;;
+      script.async = true;
+      script.src = `http://cdn.gigya.com/js/gigya.js?apiKey=${this.apiKey}&amp;lang=${this.lang}`;
+      script.text = `{lang: &quot;${this.lang}&quot;, autoLogin: ${this.autoLogin}`;
 
-    for( let trkpt = 0; trkpt &lt; this.trkpts.length; trkpt++ ){
-      trackpoints.push( {
-        lon: parseFloat( this.trkpts[ trkpt ].getAttribute( &apos;lon&apos; ) ),
-        lat: parseFloat( this.trkpts[ trkpt ].getAttribute( &apos;lat&apos; ) ),
-        elevation: parseFloat( this.trkpts[ trkpt ].querySelector( &apos;ele&apos; ).textContent ),
-        time: this.trkpts[ trkpt ].querySelector( &apos;time&apos; ).textContent
+      document.getElementsByTagName( &apos;head&apos; )[ 0 ].appendChild( script );
+
+      window.onGigyaServiceReady = ( serviceName )=&gt;{
+        this.gigya = window.gigya;
+
+        if( this.debug ){
+          this.gigya.showDebugUI();
+        }
+
+        resolve( this.gigya );
+      };
+    } );
+  }
+
+  logout(){
+    return new Promise( ( resolve, reject )=&gt;{
+      this.gigya.accounts.logout( {
+        callback: resolve
       } );
-    };
-
-    return trackpoints;
+    } );
   }
 
-  /**
-   * @typedef Duration
-   * @type Object
-   * @property {date} start The start time of the run as a Date object
-   * @property {date} end The end time of the run as a Date object
-   * @property {number} totalMS The duration of the run in miliseconds
-   * @property {string} total The duration of the run in human readable form
-   */
-
-  /**
-   * Returns the duration of the run.
-   * @return {Duration} The duration information of the run.
-   */
-  duration(){
-    let start = new Date( this.trackpoints[ 0 ].time ),
-      end = new Date( this.trackpoints[ this.trackpoints.length - 1 ].time ),
-      timeDiff = Math.abs( end.getTime() - start.getTime() ),
-      total = this.millisecondsToTime( timeDiff );
-
-    return {
-      start: start,
-      end: end,
-      totalMS: timeDiff,
-      total: total
-    };
+  showLoginScreen( opts ){
+    this.showScreenSet( {
+      startScreen: &apos;gigya-login-screen&apos;
+    } );
   }
 
-  /**
-   * Returns formatted time for milliseconds.
-   * @param {string} duration Duration in milliseconds
-   * @return {string} Readable time
-   */
-  millisecondsToTime( duration ){
-    let seconds = parseInt( ( duration / 1000 ) % 60, 10 ),
-      minutes = parseInt( ( duration / ( 1000 * 60 ) ) % 60, 10 ),
-      hours = parseInt( ( duration / ( 1000 * 60 * 60 ) ) % 24, 10 ),
-      days = parseInt( duration / ( 1000 * 60 * 60 * 24 ), 10 ),
-      hoursDays = parseInt( days * 24, 10 );
+  // http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages
+  // customLang: {}
+  showScreenSet( opts ){
+    let screensetProps = Object.assign( {
+      screenSet: this.screenSet,
+      containerID: this.containerID,
+      startScreen: &apos;gigya-login-screen&apos;,
+      customLang: {},
+      onBeforeScreenLoad: this.noop,
+      onAfterScreenLoad: this.noop,
+      onAfterSubmit: this.noop,
+      onBeforeSubmit: this.noop,
+      onFieldChanged: this.noop
+    }, opts );
 
-    hours += hoursDays;
-    hours = ( hours &lt; 10 ) ? &apos;0&apos; + hours : hours;
-    minutes = ( minutes &lt; 10 ) ? &apos;0&apos; + minutes : minutes;
-    seconds = ( seconds &lt; 10 ) ? &apos;0&apos; + seconds : seconds;
-    return ( hours === &apos;00&apos; ) ? minutes + &apos;:&apos; + seconds : hours + &apos;:&apos; + minutes + &apos;:&apos; + seconds;
+    this.gigya.accounts.showScreenSet( screensetProps );
   }
 
-  /**
-   * @typedef Pace
-   * @type Object
-   * @property {number} minutes The minutes part of the pace time.
-   * @property {number} seconds The seconds part of the pace time.
-   */
+  hideScreenSet( opts ){
+    let screensetProps = Object.assign( {
+      screenSet: this.screenSet,
+      containerID: this.containerID
+    }, opts );
 
-  /**
-   * Returns pace of the run.
-   * @param {number} duration Duration in milliseconds.
-   * @param {number} distance Distance in kilometers.
-   * @return {Pace} The Pace
-   */
-  pace( duration = this.duration().totalMS, distance = this.distance() ){
-    let minutes = new Date( duration / distance ).getUTCMinutes(),
-      seconds = new Date( duration / distance ).getUTCSeconds();
-
-    return {
-      minutes: ( minutes &lt; 10 ) ? &apos;0&apos; + minutes : minutes,
-      seconds: ( seconds &lt; 10 ) ? &apos;0&apos; + seconds : seconds
-    };
+    this.gigya.accounts.hideScreenSet( screensetProps );
   }
 
-  /**
-   * @typedef Elevation
-   * @type Object
-   * @property {object} elevation The minutes part of the pace time.
-   * @property {number} max The max elevation of the route.
-   * @property {number} min The min elevation of the route.
-   * @property {number} gain Elevation gained during run.
-   * @property {number} loss Elevation lost during run.
-   */
+  registerEventListeners( eventListeners ){
+    let listeners = Object.assign( {
+      onLogin: this.noop,
+      onLogout: this.noop,
+      onConnectionAdded: this.noop,
+      onConnectionRemoved: this.noop,
+      onLinkback: this.noop
+    }, eventListeners );
 
-  /**
-   * Returns elevation info of the run
-   * @return {Elevation} The Elevation information object
-   */
-  elevation(){
-    let eleForMinMax = [],
-      richElevation = [],
-      gain = 0, loss = 0,
-      startTime = new Date( this.trackpoints[ 0 ].time ).getTime(),
-      dist = 0;
+    this.gigya.accounts.addEventHandlers( listeners );
+  }
 
-    for( let i = 0; i &lt; this.trackpoints.length - 1; i++ ){
-      let diff = this.trackpoints[ i + 1 ].elevation - this.trackpoints[ i ].elevation,
-        time = new Date( this.trackpoints[ i + 1 ].time ).getTime(),
-        timeDiff = Math.abs( time - startTime );
+  getAccountInfo( include = &apos;profile, data&apos; ){
+    return new Promise( ( resolve, reject )=&gt;{
+      this.gigya.accounts.getAccountInfo( {
+        include: include,
+        callback: ( response )=&gt;{
+          if( response.errorCode === 0 ){
+            resolve( response );
+          } else {
+            reject( { code: response.errorCode, error: response.errorMessage, status: response.status } );
+          }
+        }
+      } );
+    } );
+  }
 
-      dist += this.calcDistanceBetweenPoints( this.trackpoints[ i ], this.trackpoints[ i + 1 ] );
+  checkLoggedInStatus(){
+    return new Promise( ( resolve, reject )=&gt;{
+      this.gigya.accounts.getAccountInfo( {
+        callback: ( response )=&gt;{
+          let result = {
+            loggedIn: ( response.errorCode === 0 ),
+            errorCode: response.errorCode,
+            errorMessage: response.errorMessage,
+            rawResponse: response
+          };
 
-      if( diff &lt; 0 ){
-        loss += diff;
-      }
+          resolve( result );
+        }
+      } );
+    } );
+  }
 
-      if( diff &gt; 0 ){
-        gain += diff;
-      }
+  share( opts ){
+    let shareProps = Object.assign( {
+      provider: &apos;facebook&apos;,
+      url: &apos;&apos;,
+      title: &apos;&apos;,
+      subtitle: &apos;&apos;,
+      description: &apos;&apos;,
+      imageurl: &apos;&apos;,
+      actionAttributes: {},
+      popupHeight: 300,
+      popupWidth: 400,
+      providerKey: false,
+      shortURLs: &apos;never&apos;,
+      facebookDialogType: &apos;feed&apos;,
+      tags: false,
+      target: false
+    }, opts );
 
-      eleForMinMax.push( this.trackpoints[ i ].elevation );
-      richElevation.push( { elevation: this.trackpoints[ i ].elevation, time: this.millisecondsToTime( timeDiff ), dist: dist } );
+    let userAction = new this.gigya.socialize.UserAction();
+
+    userAction.setLinkBack( shareProps.url );
+    userAction.setTitle( shareProps.title );
+    userAction.setSubtitle( shareProps.subtitle );
+    userAction.setDescription( shareProps.description );
+    userAction.addActionLink( shareProps.title, shareProps.url );
+
+    userAction.addMediaItem( {
+      type: &apos;image&apos;,
+      src: shareProps.imageurl,
+      href: shareProps.url
+    } );
+
+    shareProps.userAction = userAction;
+    shareProps.cid = `${shareProps.provider} share`;
+
+    this.gigya.socialize.postBookmark( shareProps );
+  }
+
+  getSchema( opts ){
+    return new Promise( ( resolve, reject )=&gt;{
+      let schemaProps = Object.assign( {
+        context: {},
+        callback: ( response )=&gt; this.cb( resolve, reject, response )
+      }, opts );
+
+      this.gigya.accounts.getSchema( schemaProps );
+    } );
+  }
+
+  getPolicies( opts ){
+    return new Promise( ( resolve, reject )=&gt;{
+      let policiesProps = Object.assign( {
+        sections: &apos;registration,gigyaPlugins,passwordComplexity,security&apos;,
+        context: {},
+        callback: ( response )=&gt; this.cb( resolve, reject, response )
+      }, opts );
+
+      this.gigya.accounts.getPolicies( policiesProps );
+    } );
+  }
+
+  getScreenSets( opts ){
+    return new Promise( ( resolve, reject )=&gt;{
+      let screenSetsProps = Object.assign( {
+        screenSetIDs: &apos;Default-RegistrationLogin&apos;,
+        include: &apos;Default-RegistrationLogin,html,css&apos;,
+        context: {},
+        callback: ( response )=&gt; this.cb( resolve, reject, response )
+      }, opts );
+
+      this.gigya.accounts.getScreenSets( screenSetsProps );
+    } );
+  }
+
+  cb( resolve, reject, response ){
+    if( response.status !== &apos;OK&apos; ){
+      reject( { code: response.errorCode, error: response.errorMessage, details: response.errorDetails, status: response.status } );
     }
-
-    return {
-      elevation: richElevation,
-      max: Math.max.apply( null, eleForMinMax ),
-      min: Math.min.apply( null, eleForMinMax ),
-      loss: loss,
-      gain: gain
-    };
-  }
-
-  /**
-   * Returns distance of the run
-   * @return {number} distance in kilometers.
-   */
-  distance(){
-    let distanceInKm = 0;
-
-    for( let i = 0; i &lt; this.trackpoints.length - 1; i++ ){
-      distanceInKm += this.calcDistanceBetweenPoints( this.trackpoints[ i ], this.trackpoints[ i + 1 ] );
-    }
-
-    return distanceInKm;
-  }
-
-  /**
-   * Returns distance betwene points
-   * @param {TrackPoint} wp1 Object with trackpoint info
-   * @param {TrackPoint} wp2 Object with trackpoint info
-   * @return {number} distance Distance between the points.
-   */
-  calcDistanceBetweenPoints( wp1, wp2 ){
-    let point1 = {
-        lat: wp1.lat * ( Math.PI / 180 ),
-        lon: wp1.lon * ( Math.PI / 180 ),
-        alt: wp1.elevation / 1000
-      },
-      point2 = {
-        lat: wp2.lat * ( Math.PI / 180 ),
-        lon: wp2.lon * ( Math.PI / 180 ),
-        alt: wp2.elevation / 1000
-      },
-      dp = 2 * Math.asin( Math.sqrt( Math.pow( Math.sin( ( point1.lat - point2.lat ) / 2 ), 2 ) + Math.cos( point1.lat ) * Math.cos( point2.lat ) * Math.pow( Math.sin( ( point1.lon - point2.lon ) / 2 ), 2 ) ) ),
-      d = dp * 6366,
-      h = Math.sqrt( Math.pow( d, 2 ) + Math.pow( point2.alt - point1.alt, 2 ) );
-
-    return h;
+    resolve( response );
   }
 }
 </code></pre>

@@ -1,5 +1,5 @@
 # Gigya API wrapper
-This is a simple Gigya JS api wrapper which works with promises and should make live easier for developers working with Gigya markup extensions.
+This is a simple Gigya JS api wrapper which works with promises and should make life easier for developers working with Gigya markup extensions.
 
 ## Status
 The esdoc has not been written properly yet. The rest should work fine.

@@ -9,7 +9,7 @@ A later release might possibly contain the other API functions so you can code a
 ## How to use...
 
 ```bash
-  npm i gigyaWrapper
+  npm i gigya-api-wrapper
 ```
 
 ### Initialisation

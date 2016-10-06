@@ -354,12 +354,6 @@ window.esdocSearchIndex = [
     "member"
   ],
   [
-    "src/index.js~gigyawrapper#cb",
-    "class/src/index.js~GigyaWrapper.html#instance-method-cb",
-    "src/index.js~GigyaWrapper#cb",
-    "method"
-  ],
-  [
     "src/index.js~gigyawrapper#checkloggedinstatus",
     "class/src/index.js~GigyaWrapper.html#instance-method-checkLoggedInStatus",
     "src/index.js~GigyaWrapper#checkLoggedInStatus",

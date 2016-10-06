@@ -76,29 +76,44 @@ export default class GigyaWrapper{
 
     /**
      * Which screen set to use
+     * @type {string}
      * @member GigyaWrapper#screenSet
      */
     this.screenSet = options.screenSet || &apos;Default-RegistrationLogin&apos;;
 
-
     /**
      * Language of error messages
+     * @type {string}
      * @member GigyaWrapper#lang
      */
     this.lang = options.lang || &apos;en&apos;;
 
     /**
      * Try to automatically login a user
+     * @type {boolean}
      * @member GigyaWrapper#autoLogin
      */
     this.autoLogin = options.autoLogin || true;
 
     /**
      * Add a debug panel to the page
+     * @type {boolean}
      * @member GigyaWrapper#debug
      */
     this.debug = options.debug || false;
 
+    /**
+     * The gigya library object
+     * @type {object}
+     * @member GigyaWrapper#gigya
+     */
+    this.gigya = false;
+
+    /**
+     * Empty noop function
+     * @type {function}
+     * @member GigyaWrapper#noop
+     */
     this.noop = ()=&gt;{};
 
     if( !this.apiKey ){
@@ -112,6 +127,11 @@ export default class GigyaWrapper{
    */
   onLibraryReady(){
     return new Promise( ( resolve, reject )=&gt;{
+
+      if( this.gigya ){
+        reject( { error: &apos;Gigya has already been loaded&apos;, gigya: this.gigya } );
+      }
+
       let script = document.createElement( &apos;script&apos; );
 
       script.type = &apos;text/javascript&apos;;
@@ -157,7 +177,7 @@ export default class GigyaWrapper{
 
   /**
    * @typedef CustomLang
-   * @type Object
+   * @type {object}
    * @property {string} account_is_disabled - defaults to: Account is disabled
    * @property {string} account_temporarily_locked_out - defaults to:  Account temporarily locked out
    * @property {string} and - defaults to: and
@@ -270,7 +290,7 @@ export default class GigyaWrapper{
   }
 
   /**
-   * Hides a Gigya screen set. Either locally hosted or hosted in the Gigya console.
+   * Get Account info for user.
    * @param {string} [include=&apos;profile,data&apos;] - A comma-separated list of fields to include in the response. The possible values are: identities-active, identities-all, loginIDs, emails, profile, data, regSource, and irank.
    * @return {promise} Resolves an object with errorCode, errorMessage and user account info based on the include parameter.
    * @see http://developers.gigya.com/display/GD/accounts.getAccountInfo+JS
@@ -290,6 +310,10 @@ export default class GigyaWrapper{
     } );
   }
 
+  /**
+   * Check if a user is logged in
+   * @return {promise} Resolves an object with errorCode, errorMessage and loggedIn true or false.
+   */
   checkLoggedInStatus(){
     return new Promise( ( resolve, reject )=&gt;{
       this.gigya.accounts.getAccountInfo( {
@@ -307,6 +331,24 @@ export default class GigyaWrapper{
     } );
   }
 
+  /**
+   * Share to social provider
+   * @param {object} opts - Options object for the share function
+   * @param {string} [opts.provider=&apos;facebook&apos;] - Which provider to share too. Possible providers: &apos;facebook&apos;, &apos;twitter&apos;, &apos;googleplus&apos;, &apos;microsoft&apos;, &apos;linkedin&apos;, delicious&apos;, &apos;googlebookmarks&apos;, &apos;whatsapp&apos;, &apos;myaol&apos;, &apos;baidu&apos;, &apos;stumbleupon&apos;, &apos;qq&apos;, &apos;sina&apos;, &apos;renren&apos;, &apos;mixi&apos;, &apos;friendfeed&apos;, &apos;reddit&apos;, &apos;boxnet&apos;, &apos;tumblr&apos;, &apos;plaxo&apos;, &apos;technorati&apos;, &apos;faves&apos;, &apos;newsvine&apos;, &apos;fark&apos;, &apos;mixx&apos;, &apos;bitly&apos;, &apos;hatena&apos;, &apos;amazon&apos;, &apos;gmail&apos;, &apos;netlog&apos;, &apos;evernote&apos;, &apos;aolmail&apos;, &apos;currenttv&apos;, &apos;yardbarker&apos;, &apos;blinklist&apos;, &apos;diigo&apos;, &apos;dropjack&apos;, &apos;segnalo&apos;, &apos;linkagogo&apos;, &apos;kaboodle&apos;, &apos;skimbit&apos;, &apos;formspring&apos;, &apos;vkontakte&apos;, &apos;spiceworks&apos;, &apos;viadeo&apos;, &apos;nkpl&apos;, &apos;xing&apos;, &apos;tuenti&apos;, &apos;odnoklassniki&apos;, &apos;douban&apos;, &apos;pinterest&apos;.
+   * @param {string} opts.url - URL to share
+   * @param {string} opts.title - Share title
+   * @param {string} [opts.subtitle] - Subtitle for share (facebook only)
+   * @param {string} [opts.description] - Share description
+   * @param {string} [opts.imageurl] - Image to share
+   * @param {object} [opts.actionAttributes] - actionAttributes contain a JSON object comprised of a series of attribute keys (categories) with associated values. You can also use a generic &quot;tags&quot; key.
+   * @param {number} [opts.popupHeight=300] - popup height
+   * @param {number} [opts.popupWidth=400] - popup width
+   * @param {string} [opts.providerKey] - The provider-specific API Key. This parameter is used when calling this method for providers that require an API key.
+   * @param {string} [opts.shortURLs] - Using this parameter you may determine whether to use Gigya&apos;s URL shortening service for URLs passed in the status parameter. Options: &apos;never&apos;, &apos;always&apos;, &apos;whenRequired&apos;.
+   * @param {string} [opts.facebookDialogType=&apos;feed&apos;] - Applicable only for sharing through Facebook. This parameter determines which Facebook dialog will appear when clicking the share button. When using the &apos;share&apos; dialog, it is required to implement open graph tags on your page.
+   * @param {string} [opts.tags] - A comma separated list of tags that are used to identify the share operation.
+   * @see http://developers.gigya.com/display/GD/socialize.postBookmark+JS
+   */
   share( opts ){
     let shareProps = Object.assign( {
       provider: &apos;facebook&apos;,
@@ -321,8 +363,7 @@ export default class GigyaWrapper{
       providerKey: false,
       shortURLs: &apos;never&apos;,
       facebookDialogType: &apos;feed&apos;,
-      tags: false,
-      target: false
+      tags: false
     }, opts );
 
     let userAction = new this.gigya.socialize.UserAction();
@@ -345,43 +386,65 @@ export default class GigyaWrapper{
     this.gigya.socialize.postBookmark( shareProps );
   }
 
-  getSchema( opts ){
+  /**
+   * Get the userSchema for the current {@link GigyaWrapper#apiKey}
+   * @return {promise} Resolves an object with errorCode, errorMessage and the schema info.
+   * @see http://developers.gigya.com/display/GD/accounts.getSchema+JS
+   */
+  getSchema(){
     return new Promise( ( resolve, reject )=&gt;{
-      let schemaProps = Object.assign( {
-        context: {},
-        callback: ( response )=&gt; this.cb( resolve, reject, response )
-      }, opts );
-
-      this.gigya.accounts.getSchema( schemaProps );
+      this.gigya.accounts.getSchema( {
+        callback: ( response )=&gt; this._cb( resolve, reject, response )
+      } );
     } );
   }
 
+  /**
+   * Get the Policies from the RaaS console interface
+   * @param {object} opts - Options object for the share function
+   * @param {string} [opts.sections=&apos;registration,gigyaPlugins,passwordComplexity,security&apos;] - A comma-separated list specifying which sections of the policies to include in the response
+   * @return {promise} Resolves an object with errorCode, errorMessage and the policies info.
+   * @see http://developers.gigya.com/display/GD/accounts.getPolicies+JS
+   */
   getPolicies( opts ){
     return new Promise( ( resolve, reject )=&gt;{
       let policiesProps = Object.assign( {
         sections: &apos;registration,gigyaPlugins,passwordComplexity,security&apos;,
-        context: {},
-        callback: ( response )=&gt; this.cb( resolve, reject, response )
+        callback: ( response )=&gt; this._cb( resolve, reject, response )
       }, opts );
 
       this.gigya.accounts.getPolicies( policiesProps );
     } );
   }
 
+  /**
+   * Get the Screensets from the RaaS console interface
+   * @param {object} opts - Options object for the share function
+   * @param {string} [opts.screenSetIDs=&apos;Default-RegistrationLogin&apos;] - Either a comma separated list or a JSON array of identifiers of the screen-sets to be retrieved. When not specified returns all the screen-sets associated with the site.
+   * @param {string} [opts.include=&apos;Default-RegistrationLogin,html,css&apos;] - A comma separated list of top level fields to include in the response. The default is: &quot;screenSetID,html,css&quot;.
+   * @return {promise} Resolves an object with errorCode, errorMessage and the policies info.
+   * @see http://developers.gigya.com/display/GD/accounts.getScreenSets+JS
+   */
   getScreenSets( opts ){
     return new Promise( ( resolve, reject )=&gt;{
       let screenSetsProps = Object.assign( {
         screenSetIDs: &apos;Default-RegistrationLogin&apos;,
         include: &apos;Default-RegistrationLogin,html,css&apos;,
-        context: {},
-        callback: ( response )=&gt; this.cb( resolve, reject, response )
+        callback: ( response )=&gt; this._cb( resolve, reject, response )
       }, opts );
 
       this.gigya.accounts.getScreenSets( screenSetsProps );
     } );
   }
 
-  cb( resolve, reject, response ){
+  /**
+   * Private callback function for the promises used in this class.
+   * @param {function} resolve - Function to fire as resolve.
+   * @param {function} reject - Function to fire as reject.
+   * @param {object} response - Teh response to use for either resolve or reject.
+   * @return {promise} Resolves or rejects a response object.
+   */
+  _cb( resolve, reject, response ){
     if( response.status !== &apos;OK&apos; ){
       reject( { code: response.errorCode, error: response.errorMessage, details: response.errorDetails, status: response.status } );
     }

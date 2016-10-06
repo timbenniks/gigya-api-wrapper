@@ -19,7 +19,7 @@
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/timbenniks/.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/timbenniks/gigya-api-wrapper.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -33,6 +33,7 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html">GigyaWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CustomLang">CustomLang</a></span></span></li>
 </ul>
 </div>
 </nav>
@@ -64,7 +65,7 @@
 
   
   
-  <div class="description" data-ice="description"><p>GigyaWrapper API wrapper class</p>
+  <div class="description" data-ice="description"><p>GigyaWrapper JS API wrapper class</p>
 </div>
 
   
@@ -126,7 +127,7 @@
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-member-apiKey">apiKey</a></span></span><span data-ice="signature">: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-member-apiKey">apiKey</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
         </p>
       </div>
       <div>
@@ -158,8 +159,7 @@
       <div>
         
         
-        <div data-ice="description"><p>Try to automatically login a user
-Defaults to true</p>
+        <div data-ice="description"><p>Try to automatically login a user</p>
 </div>
       </div>
     </td>
@@ -179,14 +179,13 @@ Defaults to true</p>
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-member-containerID">containerID</a></span></span><span data-ice="signature">: <span>*</span></span>
+           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-member-containerID">containerID</a></span></span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
         </p>
       </div>
       <div>
         
         
-        <div data-ice="description"><p>DOM node to use for screensets
-Defaults to wrapper</p>
+        <div data-ice="description"><p>DOM node to use for screensets</p>
 </div>
       </div>
     </td>
@@ -212,8 +211,7 @@ Defaults to wrapper</p>
       <div>
         
         
-        <div data-ice="description"><p>Add a debug panel to the page
-Defaults to false</p>
+        <div data-ice="description"><p>Add a debug panel to the page</p>
 </div>
       </div>
     </td>
@@ -264,8 +262,7 @@ Defaults to false</p>
       <div>
         
         
-        <div data-ice="description"><p>Language of error messages
-Defaults to en</p>
+        <div data-ice="description"><p>Language of error messages</p>
 </div>
       </div>
     </td>
@@ -316,8 +313,7 @@ Defaults to en</p>
       <div>
         
         
-        <div data-ice="description"><p>Which screen set to use
-Defaults to Default-RegistrationLogin</p>
+        <div data-ice="description"><p>Which screen set to use</p>
 </div>
       </div>
     </td>
@@ -519,13 +515,14 @@ Defaults to Default-RegistrationLogin</p>
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-method-logout">logout</a></span></span><span data-ice="signature">(): <span>*</span></span>
+           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-method-logout">logout</a></span></span><span data-ice="signature">(): <span>promise</span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Logout a user.</p>
+</div>
       </div>
     </td>
     <td>
@@ -544,13 +541,14 @@ Defaults to Default-RegistrationLogin</p>
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-method-onLibraryReady">onLibraryReady</a></span></span><span data-ice="signature">(): <span>*</span></span>
+           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-method-onLibraryReady">onLibraryReady</a></span></span><span data-ice="signature">(): <span>promise</span></span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Adds the script to the DOM and binds to the onGigyaServiceReady funciton</p>
+</div>
       </div>
     </td>
     <td>
@@ -619,13 +617,14 @@ Defaults to Default-RegistrationLogin</p>
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-method-showLoginScreen">showLoginScreen</a></span></span><span data-ice="signature">(opts: <span>*</span>)</span>
+           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-method-showLoginScreen">showLoginScreen</a></span></span><span data-ice="signature">()</span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Shortcut to show the login screen by using the showScreenSet function.</p>
+</div>
       </div>
     </td>
     <td>
@@ -644,13 +643,14 @@ Defaults to Default-RegistrationLogin</p>
     <td>
       <div>
         <p>
-           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-method-showScreenSet">showScreenSet</a></span></span><span data-ice="signature">(opts: <span>*</span>)</span>
+           <span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html#instance-method-showScreenSet">showScreenSet</a></span></span><span data-ice="signature">(opts: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span>)</span>
         </p>
       </div>
       <div>
         
         
-        
+        <div data-ice="description"><p>Shows a Gigya screen set.</p>
+</div>
       </div>
     </td>
     <td>
@@ -679,7 +679,7 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber15">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber21">source</a></span></span>
     </span>
   </h3>
 
@@ -704,6 +704,53 @@ Defaults to Default-RegistrationLogin</p>
       <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
       <td data-ice="appendix"></td>
       <td data-ice="description"><p>Object of options</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.apiKey</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"></td>
+      <td data-ice="description"><p>Gigya API key</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.containerID</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: &apos;wrapper&apos;</li></ul></td>
+      <td data-ice="description"><p>DOM node to use for screensets.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.screenSet</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: &apos;Default-RegistrationLogin&apos;</li></ul></td>
+      <td data-ice="description"><p>Which screen set to use. Can be local on hosted in Gigya console.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.lang</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: &apos;en&apos;</li></ul></td>
+      <td data-ice="description"><p>Language of error messages.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.autoLogin</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: true</li></ul></td>
+      <td data-ice="description"><p>Try to automatically login a user.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">options.debug</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Boolean">boolean</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: false</li></ul></td>
+      <td data-ice="description"><p>Add a debug panel to the page.</p>
 </td>
     </tr>
 </tbody>
@@ -736,11 +783,11 @@ Defaults to Default-RegistrationLogin</p>
     
     
     
-    <span data-ice="name">apiKey</span><span data-ice="signature">: <span>*</span></span>
+    <span data-ice="name">apiKey</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber20">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber27">source</a></span></span>
     </span>
   </h3>
 
@@ -781,15 +828,14 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber49">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber53">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Try to automatically login a user
-Defaults to true</p>
+  <div data-ice="description"><p>Try to automatically login a user</p>
 </div>
 
   
@@ -819,19 +865,18 @@ Defaults to true</p>
     
     
     
-    <span data-ice="name">containerID</span><span data-ice="signature">: <span>*</span></span>
+    <span data-ice="name">containerID</span><span data-ice="signature">: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber27">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber34">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>DOM node to use for screensets
-Defaults to wrapper</p>
+  <div data-ice="description"><p>DOM node to use for screensets</p>
 </div>
 
   
@@ -865,15 +910,14 @@ Defaults to wrapper</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber56">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber59">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Add a debug panel to the page
-Defaults to false</p>
+  <div data-ice="description"><p>Add a debug panel to the page</p>
 </div>
 
   
@@ -907,7 +951,7 @@ Defaults to false</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber77">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber84">source</a></span></span>
     </span>
   </h3>
 
@@ -947,15 +991,14 @@ Defaults to false</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber42">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber47">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Language of error messages
-Defaults to en</p>
+  <div data-ice="description"><p>Language of error messages</p>
 </div>
 
   
@@ -989,7 +1032,7 @@ Defaults to en</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber58">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber61">source</a></span></span>
     </span>
   </h3>
 
@@ -1029,15 +1072,14 @@ Defaults to en</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber34">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber40">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  <div data-ice="description"><p>Which screen set to use
-Defaults to Default-RegistrationLogin</p>
+  <div data-ice="description"><p>Which screen set to use</p>
 </div>
 
   
@@ -1074,7 +1116,7 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber247">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber320">source</a></span></span>
     </span>
   </h3>
 
@@ -1142,7 +1184,7 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber156">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber229">source</a></span></span>
     </span>
   </h3>
 
@@ -1192,7 +1234,7 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber141">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber214">source</a></span></span>
     </span>
   </h3>
 
@@ -1259,7 +1301,7 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber222">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber295">source</a></span></span>
     </span>
   </h3>
 
@@ -1325,7 +1367,7 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber211">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber284">source</a></span></span>
     </span>
   </h3>
 
@@ -1391,7 +1433,7 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber234">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber307">source</a></span></span>
     </span>
   </h3>
 
@@ -1457,7 +1499,7 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber120">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber193">source</a></span></span>
     </span>
   </h3>
 
@@ -1509,18 +1551,19 @@ Defaults to Default-RegistrationLogin</p>
     
     
     
-    <span data-ice="name">logout</span><span data-ice="signature">(): <span>*</span></span>
+    <span data-ice="name">logout</span><span data-ice="signature">(): <span>promise</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber88">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber100">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Logout a user.</p>
+</div>
 
   
 
@@ -1531,8 +1574,9 @@ Defaults to Default-RegistrationLogin</p>
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span>*</span></td>
-        
+        <td class="return-type" data-ice="returnType"><span>promise</span></td>
+        <td class="return-desc" data-ice="returnDescription"><p>Resolves an object with errorCode, errorMessage. On errorCode 0, the user was sucessfully logged out.</p>
+</td>
       </tr>
     </table>
     <div data-ice="returnProperties">
@@ -1549,7 +1593,7 @@ Defaults to Default-RegistrationLogin</p>
 
   
 
-  
+  <div data-ice="see"><h4>See:</h4><ul><li><span><a href="http://developers.gigya.com/display/GD/accounts.logout+JS">http://developers.gigya.com/display/GD/accounts.logout+JS</a></span></li></ul></div>
   
 </div>
 <div class="detail" data-ice="detail">
@@ -1559,18 +1603,19 @@ Defaults to Default-RegistrationLogin</p>
     
     
     
-    <span data-ice="name">onLibraryReady</span><span data-ice="signature">(): <span>*</span></span>
+    <span data-ice="name">onLibraryReady</span><span data-ice="signature">(): <span>promise</span></span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber65">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber72">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Adds the script to the DOM and binds to the onGigyaServiceReady funciton</p>
+</div>
 
   
 
@@ -1581,8 +1626,9 @@ Defaults to Default-RegistrationLogin</p>
     <h4>Return:</h4>
     <table>
       <tr>
-        <td class="return-type" data-ice="returnType"><span>*</span></td>
-        
+        <td class="return-type" data-ice="returnType"><span>promise</span></td>
+        <td class="return-desc" data-ice="returnDescription"><p>resolves the gigya library object</p>
+</td>
       </tr>
     </table>
     <div data-ice="returnProperties">
@@ -1613,7 +1659,7 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber129">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber202">source</a></span></span>
     </span>
   </h3>
 
@@ -1669,7 +1715,7 @@ Defaults to Default-RegistrationLogin</p>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber173">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber246">source</a></span></span>
     </span>
   </h3>
 
@@ -1721,38 +1767,23 @@ Defaults to Default-RegistrationLogin</p>
     
     
     
-    <span data-ice="name">showLoginScreen</span><span data-ice="signature">(opts: <span>*</span>)</span>
+    <span data-ice="name">showLoginScreen</span><span data-ice="signature">()</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber96">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber111">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
-
-  
-
-  <div data-ice="properties"><div data-ice="properties">
-  <h4 data-ice="title">Params:</h4>
-  <table class="params">
-    <thead>
-    <tr><td>Name</td><td>Type</td><td>Attribute</td><td>Description</td></tr>
-    </thead>
-    <tbody>
-    
-    <tr data-ice="property" data-depth="0">
-      <td data-ice="name" data-depth="0">opts</td>
-      <td data-ice="type"><span>*</span></td>
-      <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
-    </tr>
-</tbody>
-  </table>
+  <div data-ice="description"><p>Shortcut to show the login screen by using the showScreenSet function.</p>
 </div>
+
+  
+
+  <div data-ice="properties">
 </div>
 
   
@@ -1777,18 +1808,19 @@ Defaults to Default-RegistrationLogin</p>
     
     
     
-    <span data-ice="name">showScreenSet</span><span data-ice="signature">(opts: <span>*</span>)</span>
+    <span data-ice="name">showScreenSet</span><span data-ice="signature">(opts: <span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span>)</span>
     <span class="right-info">
       
       
-      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber104">source</a></span></span>
+      <span data-ice="source"><span><a href="file/src/index.js.html#lineNumber177">source</a></span></span>
     </span>
   </h3>
 
   
   
   
-  
+  <div data-ice="description"><p>Shows a Gigya screen set. Either locally hosted or hosted in the Gigya console.</p>
+</div>
 
   
 
@@ -1802,9 +1834,76 @@ Defaults to Default-RegistrationLogin</p>
     
     <tr data-ice="property" data-depth="0">
       <td data-ice="name" data-depth="0">opts</td>
-      <td data-ice="type"><span>*</span></td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object">object</a></span></td>
       <td data-ice="appendix"></td>
-      <td data-ice="description"></td>
+      <td data-ice="description"><p>Options object for showScreenSet function</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">opts.screenSet</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: this.screenSet</li></ul></td>
+      <td data-ice="description"><p>Screen set to use. Defaults to <span><a href="class/src/index.js~GigyaWrapper.html#instance-member-screenSet">GigyaWrapper#screenSet</a></span></p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">opts.containerID</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: this.containerID</li></ul></td>
+      <td data-ice="description"><p>DOM id of screen set container. Defaults to <span><a href="class/src/index.js~GigyaWrapper.html#instance-member-containerID">GigyaWrapper#containerID</a></span></p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">opts.startScreen</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String">string</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li>
+<li>default: &quot;gigya-login-screen&quot;</li></ul></td>
+      <td data-ice="description"><p>The screen to show.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">opts.customLang</td>
+      <td data-ice="type"><span><a href="typedef/index.html#static-typedef-CustomLang">CustomLang</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>An object which overrules the error message for the selected language.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">opts.onBeforeScreenLoad</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>This function is fired on before screen load.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">opts.onAfterScreenLoad</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>This function is fired onAfterScreenLoad.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">opts.onAfterSubmit</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>This function is fired onAfterSubmit.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">opts.onBeforeSubmit</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>This function is fired onBeforeSubmit.</p>
+</td>
+    </tr>
+<tr data-ice="property" data-depth="1">
+      <td data-ice="name" data-depth="1">opts.onFieldChanged</td>
+      <td data-ice="type"><span><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function">function</a></span></td>
+      <td data-ice="appendix"><ul><li>optional</li></ul></td>
+      <td data-ice="description"><p>This function is fired onFieldChanged.</p>
+</td>
     </tr>
 </tbody>
   </table>
@@ -1823,7 +1922,8 @@ Defaults to Default-RegistrationLogin</p>
 
   
 
-  
+  <div data-ice="see"><h4>See:</h4><ul><li><span><a href="http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages">http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages</a></span></li>
+<li><span><a href="http://developers.gigya.com/display/GD/accounts.showScreenSet+JS">http://developers.gigya.com/display/GD/accounts.showScreenSet+JS</a></span></li></ul></div>
   
 </div>
 </div>

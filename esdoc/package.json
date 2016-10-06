@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/timbenniks/.git"
+    "url": "https://github.com/timbenniks/gigya-api-wrapper.git"
   },
   "keywords": [
     "gigya",
@@ -20,9 +20,9 @@
   "author": "Tim Benniks",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/timbenniks//issues"
+    "url": "https://github.com/timbenniks/gigya-api-wrapper/issues"
   },
-  "homepage": "https://github.com/timbenniks/",
+  "homepage": "https://github.com/timbenniks/gigya-api-wrapper",
   "dependencies": {
     "babel": "6.5.2",
     "babel-core": "6.17.0",

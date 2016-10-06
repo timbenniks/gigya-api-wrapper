@@ -9,26 +9,32 @@ export default class GigyaWrapper{
 
   /**
    * GigyaWrapper constructor.
-   * @param {object} options Object of options
+   * @param {object} options - Object of options
+   * @param {string} options.apiKey - Gigya API key
+   * @param {string} [options.containerID='wrapper'] - DOM node to use for screensets.
+   * @param {string} [options.screenSet='Default-RegistrationLogin'] - Which screen set to use. Can be local on hosted in Gigya console.
+   * @param {string} [options.lang='en'] - Language of error messages.
+   * @param {boolean} [options.autoLogin=true] - Try to automatically login a user.
+   * @param {boolean} [options.debug=false] - Add a debug panel to the page.
    * @constructs GigyaWrapper
    */
   constructor( options ){
     /**
      * API key for Gigya.
+     * @type {string}
      * @member GigyaWrapper#apiKey
      */
     this.apiKey = options.apiKey;
 
     /**
      * DOM node to use for screensets
-     * Defaults to wrapper
+     * @type {string}
      * @member GigyaWrapper#containerID
      */
     this.containerID = options.containerID || 'wrapper';
 
     /**
      * Which screen set to use
-     * Defaults to Default-RegistrationLogin
      * @member GigyaWrapper#screenSet
      */
     this.screenSet = options.screenSet || 'Default-RegistrationLogin';
@@ -36,21 +42,18 @@ export default class GigyaWrapper{
 
     /**
      * Language of error messages
-     * Defaults to en
      * @member GigyaWrapper#lang
      */
     this.lang = options.lang || 'en';
 
     /**
      * Try to automatically login a user
-     * Defaults to true
      * @member GigyaWrapper#autoLogin
      */
     this.autoLogin = options.autoLogin || true;
 
     /**
      * Add a debug panel to the page
-     * Defaults to false
      * @member GigyaWrapper#debug
      */
     this.debug = options.debug || false;
@@ -62,6 +65,10 @@ export default class GigyaWrapper{
     }
   }
 
+  /**
+   * Adds the script to the DOM and binds to the onGigyaServiceReady funciton
+   * @return {promise} resolves the gigya library object
+   */
   onLibraryReady(){
     return new Promise( ( resolve, reject )=>{
       let script = document.createElement( 'script' );
@@ -85,6 +92,11 @@ export default class GigyaWrapper{
     } );
   }
 
+  /**
+   * Logout a user.
+   * @see http://developers.gigya.com/display/GD/accounts.logout+JS
+   * @return {promise} Resolves an object with errorCode, errorMessage. On errorCode 0, the user was sucessfully logged out.
+   */
   logout(){
     return new Promise( ( resolve, reject )=>{
       this.gigya.accounts.logout( {
@@ -93,14 +105,75 @@ export default class GigyaWrapper{
     } );
   }
 
-  showLoginScreen( opts ){
+  /**
+   * Shortcut to show the login screen by using the showScreenSet function.
+   */
+  showLoginScreen(){
     this.showScreenSet( {
       startScreen: 'gigya-login-screen'
     } );
   }
 
-  // http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages
-  // customLang: {}
+  /**
+   * @typedef CustomLang
+   * @type Object
+   * @property {string} account_is_disabled - defaults to: Account is disabled
+   * @property {string} account_temporarily_locked_out - defaults to:  Account temporarily locked out
+   * @property {string} and - defaults to: and
+   * @property {string} available - defaults to: Available
+   * @property {string} checking - defaults to: Checking
+   * @property {string} choose_file - defaults to: Choose File
+   * @property {string} email_address_is_invalid - defaults to: E-mail address is invalid.
+   * @property {string} email_already_exists - defaults to: Email already exists
+   * @property {string} fair - defaults to: Fair
+   * @property {string} invalid_fieldname - defaults to: Invalid %fieldname
+   * @property {string} invalid_login_or_password - defaults to: Invalid login or password
+   * @property {string} invalid_username_or_password - defaults to: Invalid username or password
+   * @property {string} login_identifier_exists - defaults to: Login identifier exists
+   * @property {string} maximum_size_of_3mb. - defaults to: Maximum size of 3MB.
+   * @property {string} no_file_chosen - defaults to: No file chosen
+   * @property {string} not_available - defaults to: Not available
+   * @property {string} num_characters_total - defaults to: %num characters
+   * @property {string} num_of_the_following_groups - defaults to: %num of the following: An uppercase letter, a lowercase letter, a number, a special symbol
+   * @property {string} old_password_cannot_be_the_same_as_new_password - defaults to: Old password cannot be the same as New Password
+   * @property {string} password_does_not_meet_complexity_requirements - defaults to: Password does not meet complexity requirements
+   * @property {string} password_must_contain_at_least - defaults to: Password must contain at least
+   * @property {string} password_strength_colon - defaults to: Password strength:
+   * @property {string} passwords_do_not_match - defaults to: Passwords do not match
+   * @property {string} please_enter_a_valid_fieldname - defaults to: Please enter a valid %fieldname
+   * @property {string} please_enter_fieldname - defaults to: Please enter %fieldname
+   * @property {string} profilePhoto_fileSizeError - defaults to: Photo format: JPG/GIF/PNG. Size: up to 3MB.
+   * @property {string} sorry_we_are_not_able_to_process_your_registration - defaults to: Sorry, we are not able to process your registration
+   * @property {string} strong - defaults to: Strong
+   * @property {string} the_characters_you_entered_didn't_match_the_word_verification._please_try_again - defaults to: The characters you entered didn't match the word verification. Please try again
+   * @property {string} there_are_errors_in_your_form_please_try_again - defaults to: There are errors in your form, please try again
+   * @property {string} there_is_no_user_with_that_username_or_email - defaults to: There is no user with that username or email
+   * @property {string} these_passwords_do_not_match - defaults to: These passwords do not match
+   * @property {string} this_field_is_required - defaults to: This field is required
+   * @property {string} too_weak - defaults to: Too weak
+   * @property {string} unique_identifier_exists - defaults to: Unique identifier exists
+   * @property {string} username_already_exists - defaults to: Username already exists
+   * @property {string} very_strong - defaults to: Very strong
+   * @property {string} weak - defaults to: Weak
+   * @property {string} wrong_password - defaults to: Wrong password
+   * @property {string} your_age_does_not_meet_the_minimal_age_requirement - defaults to: Your age does not meet the minimal age requirement (13+) for this site
+   */
+
+  /**
+   * Shows a Gigya screen set. Either locally hosted or hosted in the Gigya console.
+   * @param {object} opts - Options object for showScreenSet function
+   * @param {string} [opts.screenSet=this.screenSet] - Screen set to use. Defaults to {@link GigyaWrapper#screenSet}
+   * @param {string} [opts.containerID=this.containerID] - DOM id of screen set container. Defaults to {@link GigyaWrapper#containerID}
+   * @param {string} [opts.startScreen="gigya-login-screen"] - The screen to show.
+   * @param {CustomLang} [opts.customLang] - An object which overrules the error message for the selected language.
+   * @param {function} [opts.onBeforeScreenLoad] - This function is fired on before screen load.
+   * @param {function} [opts.onAfterScreenLoad] - This function is fired onAfterScreenLoad.
+   * @param {function} [opts.onAfterSubmit] - This function is fired onAfterSubmit.
+   * @param {function} [opts.onBeforeSubmit] - This function is fired onBeforeSubmit.
+   * @param {function} [opts.onFieldChanged] - This function is fired onFieldChanged.
+   * @see http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages
+   * @see http://developers.gigya.com/display/GD/accounts.showScreenSet+JS
+   */
   showScreenSet( opts ){
     let screensetProps = Object.assign( {
       screenSet: this.screenSet,

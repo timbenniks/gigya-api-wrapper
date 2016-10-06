@@ -19,7 +19,7 @@
   <a href="identifiers.html">Reference</a>
   <a href="source.html">Source</a>
   
-  <a data-ice="repoURL" href="https://github.com/timbenniks/.git" class="repo-url-github">Repository</a>
+  <a data-ice="repoURL" href="https://github.com/timbenniks/gigya-api-wrapper.git" class="repo-url-github">Repository</a>
   <div class="search-box">
   <span>
     <img src="./image/search.png">
@@ -33,12 +33,13 @@
   <ul>
     
   <li data-ice="doc"><span data-ice="kind" class="kind-class">C</span><span data-ice="name"><span><a href="class/src/index.js~GigyaWrapper.html">GigyaWrapper</a></span></span></li>
+<li data-ice="doc"><span data-ice="kind" class="kind-typedef">T</span><span data-ice="name"><span><a href="typedef/index.html#static-typedef-CustomLang">CustomLang</a></span></span></li>
 </ul>
 </div>
 </nav>
 
 <div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="gigya-api-wrapper">Gigya API wrapper</h1>
-<p>This is a simple Gigya JS api wrapper which works with promises and should make live easier for developers working with Gigya markup extensions.</p>
+<p>This is a simple Gigya JS api wrapper which works with promises and should make life easier for developers working with Gigya markup extensions.</p>
 <h2 id="status">Status</h2>
 <p>The esdoc has not been written properly yet. The rest should work fine.</p>
 <h2 id="how-to-use-">How to use...</h2>
@@ -58,17 +59,40 @@ this.gigyaWrapperInstance.onLibraryReady().then( ()=&gt;{
 
   // Listen to user events
   this.gigyaWrapperInstance.registerEventListeners({
-    onLogin: ( userData )=&gt;{ /* do something */ },
-    onLogout: ()=&gt;{ /* do something */ }
+    onLogin: ( userData )=&gt;{},
+    onLogout: ()=&gt;{},
+    onConnectionAdded: ()=&gt;{},
+    onConnectionRemoved: ()=&gt;{},
+    onLinkback: ()=&gt;{}
   });
 
-  this.gigyaWrapperInstance.checkLoggedInStatus().then( ( response )=&gt;{ /* do something */ } );
+  // Helper functions (all return promises)
+  this.gigyaWrapperInstance.checkLoggedInStatus();
+  this.gigyaWrapperInstance.getAccountInfo();
+  this.gigyaWrapperInstance.logout();
 
-  // Helper functions
-  this.gigyaWrapperInstance.logout().then( ( response )=&gt;{ /* do something */ } );
-  this.gigyaWrapperInstance.getSchema().then( ( response )=&gt;{ /* do something */ } );
-  this.gigyaWrapperInstance.getPolicies().then( ( response )=&gt;{ /* do something */ } );
-  this.gigyaWrapperInstance.getScreenSets().then( ( response )=&gt;{ /* do something */ } );
+  this.gigyaWrapperInstance.getSchema();
+  this.gigyaWrapperInstance.getPolicies();
+  this.gigyaWrapperInstance.getScreenSets();
+
+  //Screensets
+  this.gigyaWrapperInstance.showLoginScreen();
+  this.gigyaWrapperInstance.showScreenSet({
+    screenSet: &apos;screen-set&apos;, // Does not have to be set as the code will use the screenSet provided in the options. With this you can overwrite it.
+    containerID: &apos;wrapper&apos;, // Does not have to be set as the code will use the containerID provided in the options. With this you can overwrite it.
+    startScreen: &apos;gigya-login-screen&apos;, // which screen to start with in the screenSet.
+    customLang: {}, // overwrite error messages
+    onBeforeScreenLoad: ()=&gt;{},
+    onAfterScreenLoad: ()=&gt;{},
+    onAfterSubmit: ()=&gt;{},
+    onBeforeSubmit: ()=&gt;{},
+    onFieldChanged:  ()=&gt;{}
+  });
+
+  this.gigyaWrapperInstance.hideScreenSet({
+    screenSet: &apos;screen-set&apos;, // Does not have to be set as the code will use the screenSet provided in the options. With this you can overwrite it.
+    containerID: &apos;wrapper&apos;, // Does not have to be set as the code will use the containerID provided in the options. With this you can overwrite it.
+  });
 
   // Sharing
   this.gigyaWrapperInstance.share({

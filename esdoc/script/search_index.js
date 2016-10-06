@@ -472,5 +472,11 @@ window.esdocSearchIndex = [
     "class/src/index.js~GigyaWrapper.html#instance-method-showScreenSet",
     "src/index.js~GigyaWrapper#showScreenSet",
     "method"
+  ],
+  [
+    "src/index.js~gigyawrapper.customlang",
+    "typedef/index.html#static-typedef-CustomLang",
+    "src/index.js~GigyaWrapper.CustomLang",
+    "typedef"
   ]
 ]

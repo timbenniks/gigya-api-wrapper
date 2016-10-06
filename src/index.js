@@ -190,6 +190,13 @@ export default class GigyaWrapper{
     this.gigya.accounts.showScreenSet( screensetProps );
   }
 
+  /**
+   * Hides a Gigya screen set. Either locally hosted or hosted in the Gigya console.
+   * @param {object} opts - Options object for showScreenSet function
+   * @param {string} [opts.screenSet=this.screenSet] - Screen set to use. Defaults to {@link GigyaWrapper#screenSet}
+   * @param {string} [opts.containerID=this.containerID] - DOM id of screen set container. Defaults to {@link GigyaWrapper#containerID}
+   * @see http://developers.gigya.com/display/GD/accounts.hideScreenSet+JS
+   */
   hideScreenSet( opts ){
     let screensetProps = Object.assign( {
       screenSet: this.screenSet,
@@ -199,6 +206,16 @@ export default class GigyaWrapper{
     this.gigya.accounts.hideScreenSet( screensetProps );
   }
 
+  /**
+   * register to global Gigya events like user login or logout.
+   * @param {object} eventListeners - an object of functions that are fired upon global gigya events.
+   * @param {function} [opts.onLogin] - This function is fired onLogin.
+   * @param {function} [opts.onLogout] - This function is fired onLogout.
+   * @param {function} [opts.onConnectionAdded] - This function is fired onConnectionAdded.
+   * @param {function} [opts.onConnectionRemoved] - This function is fired onConnectionRemoved.
+   * @param {function} [opts.onLinkback] - This function is fired onLinkback.
+   * @see http://developers.gigya.com/display/GD/accounts.addEventHandlers+JS
+   */
   registerEventListeners( eventListeners ){
     let listeners = Object.assign( {
       onLogin: this.noop,
@@ -211,6 +228,12 @@ export default class GigyaWrapper{
     this.gigya.accounts.addEventHandlers( listeners );
   }
 
+  /**
+   * Hides a Gigya screen set. Either locally hosted or hosted in the Gigya console.
+   * @param {string} [include='profile,data'] - A comma-separated list of fields to include in the response. The possible values are: identities-active, identities-all, loginIDs, emails, profile, data, regSource, and irank.
+   * @return {promise} Resolves an object with errorCode, errorMessage and user account info based on the include parameter.
+   * @see http://developers.gigya.com/display/GD/accounts.getAccountInfo+JS
+   */
   getAccountInfo( include = 'profile, data' ){
     return new Promise( ( resolve, reject )=>{
       this.gigya.accounts.getAccountInfo( {

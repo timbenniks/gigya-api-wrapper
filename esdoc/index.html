@@ -40,9 +40,13 @@
 
 <div class="content" data-ice="content"><div data-ice="index" class="github-markdown"><h1 id="gigya-api-wrapper">Gigya API wrapper</h1>
 <p>This is a simple Gigya JS api wrapper which works with promises and should make life easier for developers working with Gigya markup extensions.</p>
-<h2 id="status">Status</h2>
-<p>The esdoc has not been written properly yet. The rest should work fine.</p>
+<h2 id="scope">Scope</h2>
+<p>Currently this library does not include the custom JS registration, login and password reset API functions as it is intended to be used next to the Gigya markup extensions. The Gigya Markup extensions deal with the registration, account linking, password reset and other flows on their own as long as you add the proper data and class attributes on their HTML.</p>
+<p>A later release might possibly contain the other API functions so you can code a completely custom Gigya RaaS implementation.</p>
 <h2 id="how-to-use-">How to use...</h2>
+<pre><code class="lang-bash"><code class="source-code prettyprint">  npm i gigyaWrapper</code>
+</code></pre>
+<h3 id="initialisation">Initialisation</h3>
 <pre><code class="lang-js"><code class="source-code prettyprint">import GigyaWrapper from &apos;gigyaWrapper&apos;;
 
 this.gigyaWrapperInstance = new GigyaWrapper({
@@ -55,55 +59,65 @@ this.gigyaWrapperInstance = new GigyaWrapper({
 });
 
 // Listen to the async load event of the Gigya library.
-this.gigyaWrapperInstance.onLibraryReady().then( ()=&gt;{
+this.gigyaWrapperInstance.onLibraryReady().then( ( gigyaObject )=&gt;{
+  // do stuffs
+});</code>
+</code></pre>
+<h3 id="a-common-use-case">A common use case</h3>
+<p>Initialise like the above code sample.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">// Listen to user events
+this.gigyaWrapperInstance.registerEventListeners({
+  onLogin: ()=&gt;{ /* show profile */ },
+  onLogout: ()=&gt;{
+    //shortcut for the showScreenSet function.
+    this.gigyaWrapperInstance.showLoginScreen();
+  }
+});
 
-  // Listen to user events
-  this.gigyaWrapperInstance.registerEventListeners({
-    onLogin: ( userData )=&gt;{},
-    onLogout: ()=&gt;{},
-    onConnectionAdded: ()=&gt;{},
-    onConnectionRemoved: ()=&gt;{},
-    onLinkback: ()=&gt;{}
-  });
+this.gigyaWrapperInstance.checkLoggedInStatus().then( ( response )=&gt;{
+    if( response.loggedIn ){
+      // show profile
+    }
+    else {
+      this.gigyaWrapperInstance.showLoginScreen();
+    }
+  }
+});</code>
+</code></pre>
+<h3 id="other-common-functions">Other common functions</h3>
+<p>Remember to always initialise (onLibraryReady()) first so the Gigya object is available.</p>
+<pre><code class="lang-js"><code class="source-code prettyprint">
+// Return promises
+this.gigyaWrapperInstance.getAccountInfo();
+this.gigyaWrapperInstance.logout();
+this.gigyaWrapperInstance.getSchema();
+this.gigyaWrapperInstance.getPolicies();
+this.gigyaWrapperInstance.getScreenSets();
 
-  // Helper functions (all return promises)
-  this.gigyaWrapperInstance.checkLoggedInStatus();
-  this.gigyaWrapperInstance.getAccountInfo();
-  this.gigyaWrapperInstance.logout();
+// ScreenSet handling
+// See esdoc directory for all property explanations
+this.gigyaWrapperInstance.showLoginScreen();
 
-  this.gigyaWrapperInstance.getSchema();
-  this.gigyaWrapperInstance.getPolicies();
-  this.gigyaWrapperInstance.getScreenSets();
+this.gigyaWrapperInstance.showScreenSet({
+  screenSet: &apos;screen-set&apos;,
+  containerID: &apos;wrapper&apos;,
+  startScreen: &apos;gigya-login-screen&apos;
+});
 
-  //Screensets
-  this.gigyaWrapperInstance.showLoginScreen();
-  this.gigyaWrapperInstance.showScreenSet({
-    screenSet: &apos;screen-set&apos;, // Does not have to be set as the code will use the screenSet provided in the options. With this you can overwrite it.
-    containerID: &apos;wrapper&apos;, // Does not have to be set as the code will use the containerID provided in the options. With this you can overwrite it.
-    startScreen: &apos;gigya-login-screen&apos;, // which screen to start with in the screenSet.
-    customLang: {}, // overwrite error messages
-    onBeforeScreenLoad: ()=&gt;{},
-    onAfterScreenLoad: ()=&gt;{},
-    onAfterSubmit: ()=&gt;{},
-    onBeforeSubmit: ()=&gt;{},
-    onFieldChanged:  ()=&gt;{}
-  });
+this.gigyaWrapperInstance.hideScreenSet({
+  screenSet: &apos;screen-set&apos;,
+  containerID: &apos;wrapper&apos;
+});
 
-  this.gigyaWrapperInstance.hideScreenSet({
-    screenSet: &apos;screen-set&apos;, // Does not have to be set as the code will use the screenSet provided in the options. With this you can overwrite it.
-    containerID: &apos;wrapper&apos;, // Does not have to be set as the code will use the containerID provided in the options. With this you can overwrite it.
-  });
-
-  // Sharing
-  this.gigyaWrapperInstance.share({
-    provider: &apos;facebook&apos;,
-    url: &apos;http://timbenniks.nl&apos;,
-    title: &apos;Tims website&apos;,
-    subtitle: &apos;Times website subtitle&apos;,
-    description: &apos;Tims website is pretty cool man&apos;,
-    imageurl: &apos;http://timbenniks.nl/assets/favicon.png&apos;
-  });
-
+// Sharing
+// See esdoc directory for all property explanations
+this.gigyaWrapperInstance.share({
+  provider: &apos;facebook&apos;,
+  url: &apos;http://timbenniks.nl&apos;,
+  title: &apos;Tims website&apos;,
+  subtitle: &apos;Times website subtitle&apos;,
+  description: &apos;Tims website is pretty cool man&apos;,
+  imageurl: &apos;http://timbenniks.nl/assets/favicon.png&apos;
 });</code>
 </code></pre>
 <h2 id="development">Development</h2>

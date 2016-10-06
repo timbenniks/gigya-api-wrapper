@@ -1,10 +1,18 @@
 # Gigya API wrapper
 This is a simple Gigya JS api wrapper which works with promises and should make life easier for developers working with Gigya markup extensions.
 
-## Status
-The esdoc has not been written properly yet. The rest should work fine.
+## Scope
+Currently this library does not include the custom JS registration, login and password reset API functions as it is intended to be used next to the Gigya markup extensions. The Gigya Markup extensions deal with the registration, account linking, password reset and other flows on their own as long as you add the proper data and class attributes on their HTML.
+
+A later release might possibly contain the other API functions so you can code a completely custom Gigya RaaS implementation.
 
 ## How to use...
+
+```bash
+  npm i gigyaWrapper
+```
+
+### Initialisation
 
 ```js
 import GigyaWrapper from 'gigyaWrapper';
@@ -19,55 +27,70 @@ this.gigyaWrapperInstance = new GigyaWrapper({
 });
 
 // Listen to the async load event of the Gigya library.
-this.gigyaWrapperInstance.onLibraryReady().then( ()=>{
+this.gigyaWrapperInstance.onLibraryReady().then( ( gigyaObject )=>{
+  // do stuffs
+});
+```
 
-  // Listen to user events
-  this.gigyaWrapperInstance.registerEventListeners({
-    onLogin: ( userData )=>{},
-    onLogout: ()=>{},
-    onConnectionAdded: ()=>{},
-    onConnectionRemoved: ()=>{},
-    onLinkback: ()=>{}
-  });
+### A common use case
+Initialise like the above code sample.
 
-  // Helper functions (all return promises)
-  this.gigyaWrapperInstance.checkLoggedInStatus();
-  this.gigyaWrapperInstance.getAccountInfo();
-  this.gigyaWrapperInstance.logout();
+```js
+// Listen to user events
+this.gigyaWrapperInstance.registerEventListeners({
+  onLogin: ()=>{ /* show profile */ },
+  onLogout: ()=>{
+    //shortcut for the showScreenSet function.
+    this.gigyaWrapperInstance.showLoginScreen();
+  }
+});
 
-  this.gigyaWrapperInstance.getSchema();
-  this.gigyaWrapperInstance.getPolicies();
-  this.gigyaWrapperInstance.getScreenSets();
+this.gigyaWrapperInstance.checkLoggedInStatus().then( ( response )=>{
+    if( response.loggedIn ){
+      // show profile
+    }
+    else {
+      this.gigyaWrapperInstance.showLoginScreen();
+    }
+  }
+});
+```
 
-  //Screensets
-  this.gigyaWrapperInstance.showLoginScreen();
-  this.gigyaWrapperInstance.showScreenSet({
-    screenSet: 'screen-set', // Does not have to be set as the code will use the screenSet provided in the options. With this you can overwrite it.
-    containerID: 'wrapper', // Does not have to be set as the code will use the containerID provided in the options. With this you can overwrite it.
-    startScreen: 'gigya-login-screen', // which screen to start with in the screenSet.
-    customLang: {}, // overwrite error messages
-    onBeforeScreenLoad: ()=>{},
-    onAfterScreenLoad: ()=>{},
-    onAfterSubmit: ()=>{},
-    onBeforeSubmit: ()=>{},
-    onFieldChanged:  ()=>{}
-  });
+### Other common functions
+Remember to always initialise (onLibraryReady()) first so the Gigya object is available.
+```js
 
-  this.gigyaWrapperInstance.hideScreenSet({
-    screenSet: 'screen-set', // Does not have to be set as the code will use the screenSet provided in the options. With this you can overwrite it.
-    containerID: 'wrapper', // Does not have to be set as the code will use the containerID provided in the options. With this you can overwrite it.
-  });
+// Return promises
+this.gigyaWrapperInstance.getAccountInfo();
+this.gigyaWrapperInstance.logout();
+this.gigyaWrapperInstance.getSchema();
+this.gigyaWrapperInstance.getPolicies();
+this.gigyaWrapperInstance.getScreenSets();
 
-  // Sharing
-  this.gigyaWrapperInstance.share({
-    provider: 'facebook',
-    url: 'http://timbenniks.nl',
-    title: 'Tims website',
-    subtitle: 'Times website subtitle',
-    description: 'Tims website is pretty cool man',
-    imageurl: 'http://timbenniks.nl/assets/favicon.png'
-  });
+// ScreenSet handling
+// See esdoc directory for all property explanations
+this.gigyaWrapperInstance.showLoginScreen();
 
+this.gigyaWrapperInstance.showScreenSet({
+  screenSet: 'screen-set',
+  containerID: 'wrapper',
+  startScreen: 'gigya-login-screen'
+});
+
+this.gigyaWrapperInstance.hideScreenSet({
+  screenSet: 'screen-set',
+  containerID: 'wrapper'
+});
+
+// Sharing
+// See esdoc directory for all property explanations
+this.gigyaWrapperInstance.share({
+  provider: 'facebook',
+  url: 'http://timbenniks.nl',
+  title: 'Tims website',
+  subtitle: 'Times website subtitle',
+  description: 'Tims website is pretty cool man',
+  imageurl: 'http://timbenniks.nl/assets/favicon.png'
 });
 ```
 

@@ -250,7 +250,7 @@ export default class GigyaWrapper{
 
   /**
    * Get Account info for user.
-   * @param {string} [include='profile,data'] - A comma-separated list of fields to include in the response. The possible values are: identities-active, identities-all, loginIDs, emails, profile, data, regSource, and irank.
+   * @param {string} [include='profile,data'] - A comma-separated list of fields to include in the response.
    * @return {promise} Resolves an object with errorCode, errorMessage and user account info based on the include parameter.
    * @see http://developers.gigya.com/display/GD/accounts.getAccountInfo+JS
    */
@@ -293,7 +293,7 @@ export default class GigyaWrapper{
   /**
    * Share to social provider
    * @param {object} opts - Options object for the share function
-   * @param {string} [opts.provider='facebook'] - Which provider to share too. Possible providers: 'facebook', 'twitter', 'googleplus', 'microsoft', 'linkedin', delicious', 'googlebookmarks', 'whatsapp', 'myaol', 'baidu', 'stumbleupon', 'qq', 'sina', 'renren', 'mixi', 'friendfeed', 'reddit', 'boxnet', 'tumblr', 'plaxo', 'technorati', 'faves', 'newsvine', 'fark', 'mixx', 'bitly', 'hatena', 'amazon', 'gmail', 'netlog', 'evernote', 'aolmail', 'currenttv', 'yardbarker', 'blinklist', 'diigo', 'dropjack', 'segnalo', 'linkagogo', 'kaboodle', 'skimbit', 'formspring', 'vkontakte', 'spiceworks', 'viadeo', 'nkpl', 'xing', 'tuenti', 'odnoklassniki', 'douban', 'pinterest'.
+   * @param {string} [opts.provider='facebook'] - Which provider to share too. See gigya docs for possible providers.
    * @param {string} opts.url - URL to share
    * @param {string} opts.title - Share title
    * @param {string} [opts.subtitle] - Subtitle for share (facebook only)
@@ -304,7 +304,7 @@ export default class GigyaWrapper{
    * @param {number} [opts.popupWidth=400] - popup width
    * @param {string} [opts.providerKey] - The provider-specific API Key. This parameter is used when calling this method for providers that require an API key.
    * @param {string} [opts.shortURLs] - Using this parameter you may determine whether to use Gigya's URL shortening service for URLs passed in the status parameter. Options: 'never', 'always', 'whenRequired'.
-   * @param {string} [opts.facebookDialogType='feed'] - Applicable only for sharing through Facebook. This parameter determines which Facebook dialog will appear when clicking the share button. When using the 'share' dialog, it is required to implement open graph tags on your page.
+   * @param {string} [opts.facebookDialogType='feed'] - Applicable only for sharing through Facebook. This parameter determines which Facebook dialog will appear when clicking the share button.
    * @param {string} [opts.tags] - A comma separated list of tags that are used to identify the share operation.
    * @see http://developers.gigya.com/display/GD/socialize.postBookmark+JS
    */
@@ -379,7 +379,7 @@ export default class GigyaWrapper{
   /**
    * Get the Screensets from the RaaS console interface
    * @param {object} opts - Options object for the share function
-   * @param {string} [opts.screenSetIDs='Default-RegistrationLogin'] - Either a comma separated list or a JSON array of identifiers of the screen-sets to be retrieved. When not specified returns all the screen-sets associated with the site.
+   * @param {string} [opts.screenSetIDs='Default-RegistrationLogin'] - Either a comma separated list or a JSON array of identifiers of the screen-sets to be retrieved.
    * @param {string} [opts.include='Default-RegistrationLogin,html,css'] - A comma separated list of top level fields to include in the response. The default is: "screenSetID,html,css".
    * @return {promise} Resolves an object with errorCode, errorMessage and the policies info.
    * @see http://developers.gigya.com/display/GD/accounts.getScreenSets+JS

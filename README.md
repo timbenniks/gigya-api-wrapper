@@ -23,7 +23,8 @@ this.gigyaWrapperInstance = new GigyaWrapper({
   screenSet: 'screen-set', // could be on gigya's servers or local
   lang: 'en',
   autoLogin: true,
-  debug: false
+  debug: false,
+  https: true
 });
 
 // Listen to the async load event of the Gigya library.

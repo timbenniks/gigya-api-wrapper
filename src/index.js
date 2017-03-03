@@ -62,6 +62,13 @@ export default class GigyaWrapper{
     this.debug = options.debug || false;
 
     /**
+     * Load of http or https
+     * @type {boolean}
+     * @member GigyaWrapper#https
+     */
+    this.https = options.https || true;
+
+    /**
      * The gigya library object
      * @type {object}
      * @member GigyaWrapper#gigya
@@ -95,8 +102,13 @@ export default class GigyaWrapper{
 
       script.type = 'text/javascript';
       script.async = true;
-      script.src = `http://cdn.gigya.com/js/gigya.js?apiKey=${this.apiKey}&lang=${this.lang}`;
       script.text = `{lang: "${this.lang}", autoLogin: ${this.autoLogin}`;
+
+      if( this.https ){
+        script.src = `https://cdns.gigya.com/js/gigya.js?apiKey=${this.apiKey}&lang=${this.lang}`;
+      } else {
+        script.src = `http://cdn.gigya.com/js/gigya.js?apiKey=${this.apiKey}&lang=${this.lang}`;
+      }
 
       document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );
 

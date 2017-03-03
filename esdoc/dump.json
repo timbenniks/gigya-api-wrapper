@@ -10,7 +10,7 @@
     "access": null,
     "description": null,
     "lineNumber": 1,
-    "content": "require( 'es6-promise/auto' );\nrequire( 'es6-object-assign' ).polyfill();\n\n/**\n * GigyaWrapper JS API wrapper class\n * @class GigyaWrapper\n */\nexport default class GigyaWrapper{\n\n  /**\n   * GigyaWrapper constructor.\n   * @param {object} options - Object of options\n   * @param {string} options.apiKey - Gigya API key\n   * @param {string} [options.containerID='wrapper'] - DOM node to use for screensets.\n   * @param {string} [options.screenSet='Default-RegistrationLogin'] - Which screen set to use. Can be local on hosted in Gigya console.\n   * @param {string} [options.lang='en'] - Language of error messages.\n   * @param {boolean} [options.autoLogin=true] - Try to automatically login a user.\n   * @param {boolean} [options.debug=false] - Add a debug panel to the page.\n   * @constructs GigyaWrapper\n   */\n  constructor( options ){\n    /**\n     * API key for Gigya.\n     * @type {string}\n     * @member GigyaWrapper#apiKey\n     */\n    this.apiKey = options.apiKey;\n\n    /**\n     * DOM node to use for screensets\n     * @type {string}\n     * @member GigyaWrapper#containerID\n     */\n    this.containerID = options.containerID || 'wrapper';\n\n    /**\n     * Which screen set to use\n     * @type {string}\n     * @member GigyaWrapper#screenSet\n     */\n    this.screenSet = options.screenSet || 'Default-RegistrationLogin';\n\n    /**\n     * Language of error messages\n     * @type {string}\n     * @member GigyaWrapper#lang\n     */\n    this.lang = options.lang || 'en';\n\n    /**\n     * Try to automatically login a user\n     * @type {boolean}\n     * @member GigyaWrapper#autoLogin\n     */\n    this.autoLogin = options.autoLogin || true;\n\n    /**\n     * Add a debug panel to the page\n     * @type {boolean}\n     * @member GigyaWrapper#debug\n     */\n    this.debug = options.debug || false;\n\n    /**\n     * The gigya library object\n     * @type {object}\n     * @member GigyaWrapper#gigya\n     */\n    this.gigya = false;\n\n    /**\n     * Empty noop function\n     * @type {function}\n     * @member GigyaWrapper#noop\n     */\n    this.noop = ()=>{};\n\n    if( !this.apiKey ){\n      throw new Error( 'No API key given' );\n    }\n  }\n\n  /**\n   * Adds the script to the DOM and binds to the onGigyaServiceReady funciton\n   * @return {promise} resolves the gigya library object\n   */\n  onLibraryReady(){\n    return new Promise( ( resolve, reject )=>{\n\n      if( this.gigya ){\n        reject( { error: 'Gigya has already been loaded', gigya: this.gigya } );\n      }\n\n      let script = document.createElement( 'script' );\n\n      script.type = 'text/javascript';\n      script.async = true;\n      script.src = `http://cdn.gigya.com/js/gigya.js?apiKey=${this.apiKey}&lang=${this.lang}`;\n      script.text = `{lang: \"${this.lang}\", autoLogin: ${this.autoLogin}`;\n\n      document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );\n\n      window.onGigyaServiceReady = ( serviceName )=>{\n        this.gigya = window.gigya;\n\n        if( this.debug ){\n          this.gigya.showDebugUI();\n        }\n\n        resolve( this.gigya );\n      };\n    } );\n  }\n\n  /**\n   * Logout a user.\n   * @see http://developers.gigya.com/display/GD/accounts.logout+JS\n   * @return {promise} Resolves an object with errorCode, errorMessage. On errorCode 0, the user was sucessfully logged out.\n   */\n  logout(){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.logout( {\n        callback: resolve\n      } );\n    } );\n  }\n\n  /**\n   * Shortcut to show the login screen by using the showScreenSet function.\n   */\n  showLoginScreen(){\n    this.showScreenSet( {\n      startScreen: 'gigya-login-screen'\n    } );\n  }\n\n  /**\n   * @typedef CustomLang\n   * @type {object}\n   * @property {string} account_is_disabled - defaults to: Account is disabled\n   * @property {string} account_temporarily_locked_out - defaults to:  Account temporarily locked out\n   * @property {string} and - defaults to: and\n   * @property {string} available - defaults to: Available\n   * @property {string} checking - defaults to: Checking\n   * @property {string} choose_file - defaults to: Choose File\n   * @property {string} email_address_is_invalid - defaults to: E-mail address is invalid.\n   * @property {string} email_already_exists - defaults to: Email already exists\n   * @property {string} fair - defaults to: Fair\n   * @property {string} invalid_fieldname - defaults to: Invalid %fieldname\n   * @property {string} invalid_login_or_password - defaults to: Invalid login or password\n   * @property {string} invalid_username_or_password - defaults to: Invalid username or password\n   * @property {string} login_identifier_exists - defaults to: Login identifier exists\n   * @property {string} maximum_size_of_3mb. - defaults to: Maximum size of 3MB.\n   * @property {string} no_file_chosen - defaults to: No file chosen\n   * @property {string} not_available - defaults to: Not available\n   * @property {string} num_characters_total - defaults to: %num characters\n   * @property {string} num_of_the_following_groups - defaults to: %num of the following: An uppercase letter, a lowercase letter, a number, a special symbol\n   * @property {string} old_password_cannot_be_the_same_as_new_password - defaults to: Old password cannot be the same as New Password\n   * @property {string} password_does_not_meet_complexity_requirements - defaults to: Password does not meet complexity requirements\n   * @property {string} password_must_contain_at_least - defaults to: Password must contain at least\n   * @property {string} password_strength_colon - defaults to: Password strength:\n   * @property {string} passwords_do_not_match - defaults to: Passwords do not match\n   * @property {string} please_enter_a_valid_fieldname - defaults to: Please enter a valid %fieldname\n   * @property {string} please_enter_fieldname - defaults to: Please enter %fieldname\n   * @property {string} profilePhoto_fileSizeError - defaults to: Photo format: JPG/GIF/PNG. Size: up to 3MB.\n   * @property {string} sorry_we_are_not_able_to_process_your_registration - defaults to: Sorry, we are not able to process your registration\n   * @property {string} strong - defaults to: Strong\n   * @property {string} the_characters_you_entered_didn't_match_the_word_verification._please_try_again - defaults to: The characters you entered didn't match the word verification. Please try again\n   * @property {string} there_are_errors_in_your_form_please_try_again - defaults to: There are errors in your form, please try again\n   * @property {string} there_is_no_user_with_that_username_or_email - defaults to: There is no user with that username or email\n   * @property {string} these_passwords_do_not_match - defaults to: These passwords do not match\n   * @property {string} this_field_is_required - defaults to: This field is required\n   * @property {string} too_weak - defaults to: Too weak\n   * @property {string} unique_identifier_exists - defaults to: Unique identifier exists\n   * @property {string} username_already_exists - defaults to: Username already exists\n   * @property {string} very_strong - defaults to: Very strong\n   * @property {string} weak - defaults to: Weak\n   * @property {string} wrong_password - defaults to: Wrong password\n   * @property {string} your_age_does_not_meet_the_minimal_age_requirement - defaults to: Your age does not meet the minimal age requirement (13+) for this site\n   */\n\n  /**\n   * Shows a Gigya screen set. Either locally hosted or hosted in the Gigya console.\n   * @param {object} opts - Options object for showScreenSet function\n   * @param {string} [opts.screenSet=this.screenSet] - Screen set to use. Defaults to {@link GigyaWrapper#screenSet}\n   * @param {string} [opts.containerID=this.containerID] - DOM id of screen set container. Defaults to {@link GigyaWrapper#containerID}\n   * @param {string} [opts.startScreen=\"gigya-login-screen\"] - The screen to show.\n   * @param {CustomLang} [opts.customLang] - An object which overrules the error message for the selected language.\n   * @param {function} [opts.onBeforeScreenLoad] - This function is fired on before screen load.\n   * @param {function} [opts.onAfterScreenLoad] - This function is fired onAfterScreenLoad.\n   * @param {function} [opts.onAfterSubmit] - This function is fired onAfterSubmit.\n   * @param {function} [opts.onBeforeSubmit] - This function is fired onBeforeSubmit.\n   * @param {function} [opts.onFieldChanged] - This function is fired onFieldChanged.\n   * @see http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages\n   * @see http://developers.gigya.com/display/GD/accounts.showScreenSet+JS\n   */\n  showScreenSet( opts ){\n    let screensetProps = Object.assign( {\n      screenSet: this.screenSet,\n      containerID: this.containerID,\n      startScreen: 'gigya-login-screen',\n      customLang: {},\n      onBeforeScreenLoad: this.noop,\n      onAfterScreenLoad: this.noop,\n      onAfterSubmit: this.noop,\n      onBeforeSubmit: this.noop,\n      onFieldChanged: this.noop\n    }, opts );\n\n    this.gigya.accounts.showScreenSet( screensetProps );\n  }\n\n  /**\n   * Hides a Gigya screen set. Either locally hosted or hosted in the Gigya console.\n   * @param {object} opts - Options object for showScreenSet function\n   * @param {string} [opts.screenSet=this.screenSet] - Screen set to use. Defaults to {@link GigyaWrapper#screenSet}\n   * @param {string} [opts.containerID=this.containerID] - DOM id of screen set container. Defaults to {@link GigyaWrapper#containerID}\n   * @see http://developers.gigya.com/display/GD/accounts.hideScreenSet+JS\n   */\n  hideScreenSet( opts ){\n    let screensetProps = Object.assign( {\n      screenSet: this.screenSet,\n      containerID: this.containerID\n    }, opts );\n\n    this.gigya.accounts.hideScreenSet( screensetProps );\n  }\n\n  /**\n   * register to global Gigya events like user login or logout.\n   * @param {object} eventListeners - an object of functions that are fired upon global gigya events.\n   * @param {function} [opts.onLogin] - This function is fired onLogin.\n   * @param {function} [opts.onLogout] - This function is fired onLogout.\n   * @param {function} [opts.onConnectionAdded] - This function is fired onConnectionAdded.\n   * @param {function} [opts.onConnectionRemoved] - This function is fired onConnectionRemoved.\n   * @param {function} [opts.onLinkback] - This function is fired onLinkback.\n   * @see http://developers.gigya.com/display/GD/accounts.addEventHandlers+JS\n   */\n  registerEventListeners( eventListeners ){\n    let listeners = Object.assign( {\n      onLogin: this.noop,\n      onLogout: this.noop,\n      onConnectionAdded: this.noop,\n      onConnectionRemoved: this.noop,\n      onLinkback: this.noop\n    }, eventListeners );\n\n    this.gigya.accounts.addEventHandlers( listeners );\n  }\n\n  /**\n   * Get Account info for user.\n   * @param {string} [include='profile,data'] - A comma-separated list of fields to include in the response.\n   * @return {promise} Resolves an object with errorCode, errorMessage and user account info based on the include parameter.\n   * @see http://developers.gigya.com/display/GD/accounts.getAccountInfo+JS\n   */\n  getAccountInfo( include = 'profile, data' ){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.getAccountInfo( {\n        include: include,\n        callback: ( response )=>{\n          if( response.errorCode === 0 ){\n            resolve( response );\n          } else {\n            reject( { code: response.errorCode, error: response.errorMessage, status: response.status } );\n          }\n        }\n      } );\n    } );\n  }\n\n  /**\n   * Check if a user is logged in\n   * @return {promise} Resolves an object with errorCode, errorMessage and loggedIn true or false.\n   */\n  checkLoggedInStatus(){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.getAccountInfo( {\n        callback: ( response )=>{\n          let result = {\n            loggedIn: ( response.errorCode === 0 ),\n            errorCode: response.errorCode,\n            errorMessage: response.errorMessage,\n            rawResponse: response\n          };\n\n          resolve( result );\n        }\n      } );\n    } );\n  }\n\n  /**\n   * Share to social provider\n   * @param {object} opts - Options object for the share function\n   * @param {string} [opts.provider='facebook'] - Which provider to share too. Possible providers: 'facebook', 'twitter', 'googleplus', 'microsoft', 'linkedin', delicious', 'googlebookmarks', 'whatsapp', 'myaol', 'baidu', 'stumbleupon', 'qq', 'sina', 'renren', 'mixi', 'friendfeed', 'reddit', 'boxnet', 'tumblr', 'plaxo', 'technorati', 'faves', 'newsvine', 'fark', 'mixx', 'bitly', 'hatena', 'amazon', 'gmail', 'netlog', 'evernote', 'aolmail', 'currenttv', 'yardbarker', 'blinklist', 'diigo', 'dropjack', 'segnalo', 'linkagogo', 'kaboodle', 'skimbit', 'formspring', 'vkontakte', 'spiceworks', 'viadeo', 'nkpl', 'xing', 'tuenti', 'odnoklassniki', 'douban', 'pinterest'.\n   * @param {string} opts.url - URL to share\n   * @param {string} opts.title - Share title\n   * @param {string} [opts.subtitle] - Subtitle for share (facebook only)\n   * @param {string} [opts.description] - Share description\n   * @param {string} [opts.imageurl] - Image to share\n   * @param {object} [opts.actionAttributes] - actionAttributes contain a JSON object comprised of a series of attribute keys (categories) with associated values. You can also use a generic \"tags\" key.\n   * @param {number} [opts.popupHeight=300] - popup height\n   * @param {number} [opts.popupWidth=400] - popup width\n   * @param {string} [opts.providerKey] - The provider-specific API Key. This parameter is used when calling this method for providers that require an API key.\n   * @param {string} [opts.shortURLs] - Using this parameter you may determine whether to use Gigya's URL shortening service for URLs passed in the status parameter. Options: 'never', 'always', 'whenRequired'.\n   * @param {string} [opts.facebookDialogType='feed'] - Applicable only for sharing through Facebook. This parameter determines which Facebook dialog will appear when clicking the share button. When using the 'share' dialog, it is required to implement open graph tags on your page.\n   * @param {string} [opts.tags] - A comma separated list of tags that are used to identify the share operation.\n   * @see http://developers.gigya.com/display/GD/socialize.postBookmark+JS\n   */\n  share( opts ){\n    let shareProps = Object.assign( {\n      provider: 'facebook',\n      url: '',\n      title: '',\n      subtitle: '',\n      description: '',\n      imageurl: '',\n      actionAttributes: {},\n      popupHeight: 300,\n      popupWidth: 400,\n      providerKey: false,\n      shortURLs: 'never',\n      facebookDialogType: 'feed',\n      tags: false\n    }, opts );\n\n    let userAction = new this.gigya.socialize.UserAction();\n\n    userAction.setLinkBack( shareProps.url );\n    userAction.setTitle( shareProps.title );\n    userAction.setSubtitle( shareProps.subtitle );\n    userAction.setDescription( shareProps.description );\n    userAction.addActionLink( shareProps.title, shareProps.url );\n\n    userAction.addMediaItem( {\n      type: 'image',\n      src: shareProps.imageurl,\n      href: shareProps.url\n    } );\n\n    shareProps.userAction = userAction;\n    shareProps.cid = `${shareProps.provider} share`;\n\n    this.gigya.socialize.postBookmark( shareProps );\n  }\n\n  /**\n   * Get the userSchema for the current {@link GigyaWrapper#apiKey}\n   * @return {promise} Resolves an object with errorCode, errorMessage and the schema info.\n   * @see http://developers.gigya.com/display/GD/accounts.getSchema+JS\n   */\n  getSchema(){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.getSchema( {\n        callback: ( response )=> this._cb( resolve, reject, response )\n      } );\n    } );\n  }\n\n  /**\n   * Get the Policies from the RaaS console interface\n   * @param {object} opts - Options object for the share function\n   * @param {string} [opts.sections='registration,gigyaPlugins,passwordComplexity,security'] - A comma-separated list specifying which sections of the policies to include in the response\n   * @return {promise} Resolves an object with errorCode, errorMessage and the policies info.\n   * @see http://developers.gigya.com/display/GD/accounts.getPolicies+JS\n   */\n  getPolicies( opts ){\n    return new Promise( ( resolve, reject )=>{\n      let policiesProps = Object.assign( {\n        sections: 'registration,gigyaPlugins,passwordComplexity,security',\n        callback: ( response )=> this._cb( resolve, reject, response )\n      }, opts );\n\n      this.gigya.accounts.getPolicies( policiesProps );\n    } );\n  }\n\n  /**\n   * Get the Screensets from the RaaS console interface\n   * @param {object} opts - Options object for the share function\n   * @param {string} [opts.screenSetIDs='Default-RegistrationLogin'] - Either a comma separated list or a JSON array of identifiers of the screen-sets to be retrieved. When not specified returns all the screen-sets associated with the site.\n   * @param {string} [opts.include='Default-RegistrationLogin,html,css'] - A comma separated list of top level fields to include in the response. The default is: \"screenSetID,html,css\".\n   * @return {promise} Resolves an object with errorCode, errorMessage and the policies info.\n   * @see http://developers.gigya.com/display/GD/accounts.getScreenSets+JS\n   */\n  getScreenSets( opts ){\n    return new Promise( ( resolve, reject )=>{\n      let screenSetsProps = Object.assign( {\n        screenSetIDs: 'Default-RegistrationLogin',\n        include: 'Default-RegistrationLogin,html,css',\n        callback: ( response )=> this._cb( resolve, reject, response )\n      }, opts );\n\n      this.gigya.accounts.getScreenSets( screenSetsProps );\n    } );\n  }\n\n  /**\n   * Private callback function for the promises used in this class.\n   * @param {function} resolve - Function to fire as resolve.\n   * @param {function} reject - Function to fire as reject.\n   * @param {object} response - Teh response to use for either resolve or reject.\n   * @return {promise} Resolves or rejects a response object.\n   */\n  _cb( resolve, reject, response ){\n    if( response.status !== 'OK' ){\n      reject( { code: response.errorCode, error: response.errorMessage, details: response.errorDetails, status: response.status } );\n    }\n    resolve( response );\n  }\n}\n"
+    "content": "require( 'es6-promise/auto' );\nrequire( 'es6-object-assign' ).polyfill();\n\n/**\n * GigyaWrapper JS API wrapper class\n * @class GigyaWrapper\n */\nexport default class GigyaWrapper{\n\n  /**\n   * GigyaWrapper constructor.\n   * @param {object} options - Object of options\n   * @param {string} options.apiKey - Gigya API key\n   * @param {string} [options.containerID='wrapper'] - DOM node to use for screensets.\n   * @param {string} [options.screenSet='Default-RegistrationLogin'] - Which screen set to use. Can be local on hosted in Gigya console.\n   * @param {string} [options.lang='en'] - Language of error messages.\n   * @param {boolean} [options.autoLogin=true] - Try to automatically login a user.\n   * @param {boolean} [options.debug=false] - Add a debug panel to the page.\n   * @constructs GigyaWrapper\n   */\n  constructor( options ){\n    /**\n     * API key for Gigya.\n     * @type {string}\n     * @member GigyaWrapper#apiKey\n     */\n    this.apiKey = options.apiKey;\n\n    /**\n     * DOM node to use for screensets\n     * @type {string}\n     * @member GigyaWrapper#containerID\n     */\n    this.containerID = options.containerID || 'wrapper';\n\n    /**\n     * Which screen set to use\n     * @type {string}\n     * @member GigyaWrapper#screenSet\n     */\n    this.screenSet = options.screenSet || 'Default-RegistrationLogin';\n\n    /**\n     * Language of error messages\n     * @type {string}\n     * @member GigyaWrapper#lang\n     */\n    this.lang = options.lang || 'en';\n\n    /**\n     * Try to automatically login a user\n     * @type {boolean}\n     * @member GigyaWrapper#autoLogin\n     */\n    this.autoLogin = options.autoLogin || true;\n\n    /**\n     * Add a debug panel to the page\n     * @type {boolean}\n     * @member GigyaWrapper#debug\n     */\n    this.debug = options.debug || false;\n\n    /**\n     * Load of http or https\n     * @type {boolean}\n     * @member GigyaWrapper#https\n     */\n    this.https = options.https || true;\n\n    /**\n     * The gigya library object\n     * @type {object}\n     * @member GigyaWrapper#gigya\n     */\n    this.gigya = false;\n\n    /**\n     * Empty noop function\n     * @type {function}\n     * @member GigyaWrapper#noop\n     */\n    this.noop = ()=>{};\n\n    if( !this.apiKey ){\n      throw new Error( 'No API key given' );\n    }\n  }\n\n  /**\n   * Adds the script to the DOM and binds to the onGigyaServiceReady funciton\n   * @return {promise} resolves the gigya library object\n   */\n  onLibraryReady(){\n    return new Promise( ( resolve, reject )=>{\n\n      if( this.gigya ){\n        reject( { error: 'Gigya has already been loaded', gigya: this.gigya } );\n      }\n\n      let script = document.createElement( 'script' );\n\n      script.type = 'text/javascript';\n      script.async = true;\n      script.text = `{lang: \"${this.lang}\", autoLogin: ${this.autoLogin}`;\n\n      if( this.https ){\n        script.src = `https://cdns.gigya.com/js/gigya.js?apiKey=${this.apiKey}&lang=${this.lang}`;\n      }\n      else {\n        script.src = `http://cdn.gigya.com/js/gigya.js?apiKey=${this.apiKey}&lang=${this.lang}`;\n      }\n\n      document.getElementsByTagName( 'head' )[ 0 ].appendChild( script );\n\n      window.onGigyaServiceReady = ( serviceName )=>{\n        this.gigya = window.gigya;\n\n        if( this.debug ){\n          this.gigya.showDebugUI();\n        }\n\n        resolve( this.gigya );\n      };\n    } );\n  }\n\n  /**\n   * Logout a user.\n   * @see http://developers.gigya.com/display/GD/accounts.logout+JS\n   * @return {promise} Resolves an object with errorCode, errorMessage. On errorCode 0, the user was sucessfully logged out.\n   */\n  logout(){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.logout( {\n        callback: resolve\n      } );\n    } );\n  }\n\n  /**\n   * Shortcut to show the login screen by using the showScreenSet function.\n   */\n  showLoginScreen(){\n    this.showScreenSet( {\n      startScreen: 'gigya-login-screen'\n    } );\n  }\n\n  /**\n   * @typedef CustomLang\n   * @type {object}\n   * @property {string} account_is_disabled - defaults to: Account is disabled\n   * @property {string} account_temporarily_locked_out - defaults to:  Account temporarily locked out\n   * @property {string} and - defaults to: and\n   * @property {string} available - defaults to: Available\n   * @property {string} checking - defaults to: Checking\n   * @property {string} choose_file - defaults to: Choose File\n   * @property {string} email_address_is_invalid - defaults to: E-mail address is invalid.\n   * @property {string} email_already_exists - defaults to: Email already exists\n   * @property {string} fair - defaults to: Fair\n   * @property {string} invalid_fieldname - defaults to: Invalid %fieldname\n   * @property {string} invalid_login_or_password - defaults to: Invalid login or password\n   * @property {string} invalid_username_or_password - defaults to: Invalid username or password\n   * @property {string} login_identifier_exists - defaults to: Login identifier exists\n   * @property {string} maximum_size_of_3mb. - defaults to: Maximum size of 3MB.\n   * @property {string} no_file_chosen - defaults to: No file chosen\n   * @property {string} not_available - defaults to: Not available\n   * @property {string} num_characters_total - defaults to: %num characters\n   * @property {string} num_of_the_following_groups - defaults to: %num of the following: An uppercase letter, a lowercase letter, a number, a special symbol\n   * @property {string} old_password_cannot_be_the_same_as_new_password - defaults to: Old password cannot be the same as New Password\n   * @property {string} password_does_not_meet_complexity_requirements - defaults to: Password does not meet complexity requirements\n   * @property {string} password_must_contain_at_least - defaults to: Password must contain at least\n   * @property {string} password_strength_colon - defaults to: Password strength:\n   * @property {string} passwords_do_not_match - defaults to: Passwords do not match\n   * @property {string} please_enter_a_valid_fieldname - defaults to: Please enter a valid %fieldname\n   * @property {string} please_enter_fieldname - defaults to: Please enter %fieldname\n   * @property {string} profilePhoto_fileSizeError - defaults to: Photo format: JPG/GIF/PNG. Size: up to 3MB.\n   * @property {string} sorry_we_are_not_able_to_process_your_registration - defaults to: Sorry, we are not able to process your registration\n   * @property {string} strong - defaults to: Strong\n   * @property {string} the_characters_you_entered_didn't_match_the_word_verification._please_try_again - defaults to: The characters you entered didn't match the word verification. Please try again\n   * @property {string} there_are_errors_in_your_form_please_try_again - defaults to: There are errors in your form, please try again\n   * @property {string} there_is_no_user_with_that_username_or_email - defaults to: There is no user with that username or email\n   * @property {string} these_passwords_do_not_match - defaults to: These passwords do not match\n   * @property {string} this_field_is_required - defaults to: This field is required\n   * @property {string} too_weak - defaults to: Too weak\n   * @property {string} unique_identifier_exists - defaults to: Unique identifier exists\n   * @property {string} username_already_exists - defaults to: Username already exists\n   * @property {string} very_strong - defaults to: Very strong\n   * @property {string} weak - defaults to: Weak\n   * @property {string} wrong_password - defaults to: Wrong password\n   * @property {string} your_age_does_not_meet_the_minimal_age_requirement - defaults to: Your age does not meet the minimal age requirement (13+) for this site\n   */\n\n  /**\n   * Shows a Gigya screen set. Either locally hosted or hosted in the Gigya console.\n   * @param {object} opts - Options object for showScreenSet function\n   * @param {string} [opts.screenSet=this.screenSet] - Screen set to use. Defaults to {@link GigyaWrapper#screenSet}\n   * @param {string} [opts.containerID=this.containerID] - DOM id of screen set container. Defaults to {@link GigyaWrapper#containerID}\n   * @param {string} [opts.startScreen=\"gigya-login-screen\"] - The screen to show.\n   * @param {CustomLang} [opts.customLang] - An object which overrules the error message for the selected language.\n   * @param {function} [opts.onBeforeScreenLoad] - This function is fired on before screen load.\n   * @param {function} [opts.onAfterScreenLoad] - This function is fired onAfterScreenLoad.\n   * @param {function} [opts.onAfterSubmit] - This function is fired onAfterSubmit.\n   * @param {function} [opts.onBeforeSubmit] - This function is fired onBeforeSubmit.\n   * @param {function} [opts.onFieldChanged] - This function is fired onFieldChanged.\n   * @see http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages\n   * @see http://developers.gigya.com/display/GD/accounts.showScreenSet+JS\n   */\n  showScreenSet( opts ){\n    let screensetProps = Object.assign( {\n      screenSet: this.screenSet,\n      containerID: this.containerID,\n      startScreen: 'gigya-login-screen',\n      customLang: {},\n      onBeforeScreenLoad: this.noop,\n      onAfterScreenLoad: this.noop,\n      onAfterSubmit: this.noop,\n      onBeforeSubmit: this.noop,\n      onFieldChanged: this.noop\n    }, opts );\n\n    this.gigya.accounts.showScreenSet( screensetProps );\n  }\n\n  /**\n   * Hides a Gigya screen set. Either locally hosted or hosted in the Gigya console.\n   * @param {object} opts - Options object for showScreenSet function\n   * @param {string} [opts.screenSet=this.screenSet] - Screen set to use. Defaults to {@link GigyaWrapper#screenSet}\n   * @param {string} [opts.containerID=this.containerID] - DOM id of screen set container. Defaults to {@link GigyaWrapper#containerID}\n   * @see http://developers.gigya.com/display/GD/accounts.hideScreenSet+JS\n   */\n  hideScreenSet( opts ){\n    let screensetProps = Object.assign( {\n      screenSet: this.screenSet,\n      containerID: this.containerID\n    }, opts );\n\n    this.gigya.accounts.hideScreenSet( screensetProps );\n  }\n\n  /**\n   * register to global Gigya events like user login or logout.\n   * @param {object} eventListeners - an object of functions that are fired upon global gigya events.\n   * @param {function} [opts.onLogin] - This function is fired onLogin.\n   * @param {function} [opts.onLogout] - This function is fired onLogout.\n   * @param {function} [opts.onConnectionAdded] - This function is fired onConnectionAdded.\n   * @param {function} [opts.onConnectionRemoved] - This function is fired onConnectionRemoved.\n   * @param {function} [opts.onLinkback] - This function is fired onLinkback.\n   * @see http://developers.gigya.com/display/GD/accounts.addEventHandlers+JS\n   */\n  registerEventListeners( eventListeners ){\n    let listeners = Object.assign( {\n      onLogin: this.noop,\n      onLogout: this.noop,\n      onConnectionAdded: this.noop,\n      onConnectionRemoved: this.noop,\n      onLinkback: this.noop\n    }, eventListeners );\n\n    this.gigya.accounts.addEventHandlers( listeners );\n  }\n\n  /**\n   * Get Account info for user.\n   * @param {string} [include='profile,data'] - A comma-separated list of fields to include in the response.\n   * @return {promise} Resolves an object with errorCode, errorMessage and user account info based on the include parameter.\n   * @see http://developers.gigya.com/display/GD/accounts.getAccountInfo+JS\n   */\n  getAccountInfo( include = 'profile, data' ){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.getAccountInfo( {\n        include: include,\n        callback: ( response )=>{\n          if( response.errorCode === 0 ){\n            resolve( response );\n          } else {\n            reject( { code: response.errorCode, error: response.errorMessage, status: response.status } );\n          }\n        }\n      } );\n    } );\n  }\n\n  /**\n   * Check if a user is logged in\n   * @return {promise} Resolves an object with errorCode, errorMessage and loggedIn true or false.\n   */\n  checkLoggedInStatus(){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.getAccountInfo( {\n        callback: ( response )=>{\n          let result = {\n            loggedIn: ( response.errorCode === 0 ),\n            errorCode: response.errorCode,\n            errorMessage: response.errorMessage,\n            rawResponse: response\n          };\n\n          resolve( result );\n        }\n      } );\n    } );\n  }\n\n  /**\n   * Share to social provider\n   * @param {object} opts - Options object for the share function\n   * @param {string} [opts.provider='facebook'] - Which provider to share too. See gigya docs for possible providers.\n   * @param {string} opts.url - URL to share\n   * @param {string} opts.title - Share title\n   * @param {string} [opts.subtitle] - Subtitle for share (facebook only)\n   * @param {string} [opts.description] - Share description\n   * @param {string} [opts.imageurl] - Image to share\n   * @param {object} [opts.actionAttributes] - actionAttributes contain a JSON object comprised of a series of attribute keys (categories) with associated values. You can also use a generic \"tags\" key.\n   * @param {number} [opts.popupHeight=300] - popup height\n   * @param {number} [opts.popupWidth=400] - popup width\n   * @param {string} [opts.providerKey] - The provider-specific API Key. This parameter is used when calling this method for providers that require an API key.\n   * @param {string} [opts.shortURLs] - Using this parameter you may determine whether to use Gigya's URL shortening service for URLs passed in the status parameter. Options: 'never', 'always', 'whenRequired'.\n   * @param {string} [opts.facebookDialogType='feed'] - Applicable only for sharing through Facebook. This parameter determines which Facebook dialog will appear when clicking the share button.\n   * @param {string} [opts.tags] - A comma separated list of tags that are used to identify the share operation.\n   * @see http://developers.gigya.com/display/GD/socialize.postBookmark+JS\n   */\n  share( opts ){\n    let shareProps = Object.assign( {\n      provider: 'facebook',\n      url: '',\n      title: '',\n      subtitle: '',\n      description: '',\n      imageurl: '',\n      actionAttributes: {},\n      popupHeight: 300,\n      popupWidth: 400,\n      providerKey: false,\n      shortURLs: 'never',\n      facebookDialogType: 'feed',\n      tags: false\n    }, opts );\n\n    let userAction = new this.gigya.socialize.UserAction();\n\n    userAction.setLinkBack( shareProps.url );\n    userAction.setTitle( shareProps.title );\n    userAction.setSubtitle( shareProps.subtitle );\n    userAction.setDescription( shareProps.description );\n    userAction.addActionLink( shareProps.title, shareProps.url );\n\n    userAction.addMediaItem( {\n      type: 'image',\n      src: shareProps.imageurl,\n      href: shareProps.url\n    } );\n\n    shareProps.userAction = userAction;\n    shareProps.cid = `${shareProps.provider} share`;\n\n    this.gigya.socialize.postBookmark( shareProps );\n  }\n\n  /**\n   * Get the userSchema for the current {@link GigyaWrapper#apiKey}\n   * @return {promise} Resolves an object with errorCode, errorMessage and the schema info.\n   * @see http://developers.gigya.com/display/GD/accounts.getSchema+JS\n   */\n  getSchema(){\n    return new Promise( ( resolve, reject )=>{\n      this.gigya.accounts.getSchema( {\n        callback: ( response )=> this._cb( resolve, reject, response )\n      } );\n    } );\n  }\n\n  /**\n   * Get the Policies from the RaaS console interface\n   * @param {object} opts - Options object for the share function\n   * @param {string} [opts.sections='registration,gigyaPlugins,passwordComplexity,security'] - A comma-separated list specifying which sections of the policies to include in the response\n   * @return {promise} Resolves an object with errorCode, errorMessage and the policies info.\n   * @see http://developers.gigya.com/display/GD/accounts.getPolicies+JS\n   */\n  getPolicies( opts ){\n    return new Promise( ( resolve, reject )=>{\n      let policiesProps = Object.assign( {\n        sections: 'registration,gigyaPlugins,passwordComplexity,security',\n        callback: ( response )=> this._cb( resolve, reject, response )\n      }, opts );\n\n      this.gigya.accounts.getPolicies( policiesProps );\n    } );\n  }\n\n  /**\n   * Get the Screensets from the RaaS console interface\n   * @param {object} opts - Options object for the share function\n   * @param {string} [opts.screenSetIDs='Default-RegistrationLogin'] - Either a comma separated list or a JSON array of identifiers of the screen-sets to be retrieved.\n   * @param {string} [opts.include='Default-RegistrationLogin,html,css'] - A comma separated list of top level fields to include in the response. The default is: \"screenSetID,html,css\".\n   * @return {promise} Resolves an object with errorCode, errorMessage and the policies info.\n   * @see http://developers.gigya.com/display/GD/accounts.getScreenSets+JS\n   */\n  getScreenSets( opts ){\n    return new Promise( ( resolve, reject )=>{\n      let screenSetsProps = Object.assign( {\n        screenSetIDs: 'Default-RegistrationLogin',\n        include: 'Default-RegistrationLogin,html,css',\n        callback: ( response )=> this._cb( resolve, reject, response )\n      }, opts );\n\n      this.gigya.accounts.getScreenSets( screenSetsProps );\n    } );\n  }\n\n  /**\n   * Private callback function for the promises used in this class.\n   * @param {function} resolve - Function to fire as resolve.\n   * @param {function} reject - Function to fire as reject.\n   * @param {object} response - Teh response to use for either resolve or reject.\n   * @return {promise} Resolves or rejects a response object.\n   */\n  _cb( resolve, reject, response ){\n    if( response.status !== 'OK' ){\n      reject( { code: response.errorCode, error: response.errorMessage, details: response.errorDetails, status: response.status } );\n    }\n    resolve( response );\n  }\n}\n"
   },
   {
     "__docId__": 1,
@@ -296,12 +296,38 @@
     "kind": "member",
     "static": false,
     "variation": null,
+    "name": "https",
+    "memberof": "src/index.js~GigyaWrapper",
+    "longname": "src/index.js~GigyaWrapper#https",
+    "access": null,
+    "description": "Load of http or https",
+    "lineNumber": 69,
+    "unknown": [
+      {
+        "tagName": "@member",
+        "tagValue": "GigyaWrapper#https"
+      }
+    ],
+    "type": {
+      "nullable": null,
+      "types": [
+        "boolean"
+      ],
+      "spread": false,
+      "description": null
+    }
+  },
+  {
+    "__docId__": 10,
+    "kind": "member",
+    "static": false,
+    "variation": null,
     "name": "gigya",
     "memberof": "src/index.js~GigyaWrapper",
     "longname": "src/index.js~GigyaWrapper#gigya",
     "access": null,
     "description": "The gigya library object",
-    "lineNumber": 69,
+    "lineNumber": 76,
     "unknown": [
       {
         "tagName": "@member",
@@ -318,7 +344,7 @@
     }
   },
   {
-    "__docId__": 10,
+    "__docId__": 11,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -327,7 +353,7 @@
     "longname": "src/index.js~GigyaWrapper#noop",
     "access": null,
     "description": "Empty noop function",
-    "lineNumber": 76,
+    "lineNumber": 83,
     "unknown": [
       {
         "tagName": "@member",
@@ -344,7 +370,7 @@
     }
   },
   {
-    "__docId__": 11,
+    "__docId__": 12,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -353,7 +379,7 @@
     "longname": "src/index.js~GigyaWrapper#onLibraryReady",
     "access": null,
     "description": "Adds the script to the DOM and binds to the onGigyaServiceReady funciton",
-    "lineNumber": 87,
+    "lineNumber": 94,
     "params": [],
     "return": {
       "nullable": null,
@@ -366,7 +392,7 @@
     "generator": false
   },
   {
-    "__docId__": 12,
+    "__docId__": 13,
     "kind": "member",
     "static": false,
     "variation": null,
@@ -375,7 +401,7 @@
     "longname": "src/index.js~GigyaWrapper#gigya",
     "access": null,
     "description": null,
-    "lineNumber": 104,
+    "lineNumber": 117,
     "undocument": true,
     "type": {
       "types": [
@@ -384,7 +410,7 @@
     }
   },
   {
-    "__docId__": 13,
+    "__docId__": 14,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -396,7 +422,7 @@
     "see": [
       "http://developers.gigya.com/display/GD/accounts.logout+JS"
     ],
-    "lineNumber": 120,
+    "lineNumber": 133,
     "params": [],
     "return": {
       "nullable": null,
@@ -409,7 +435,7 @@
     "generator": false
   },
   {
-    "__docId__": 14,
+    "__docId__": 15,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -418,12 +444,12 @@
     "longname": "src/index.js~GigyaWrapper#showLoginScreen",
     "access": null,
     "description": "Shortcut to show the login screen by using the showScreenSet function.",
-    "lineNumber": 131,
+    "lineNumber": 144,
     "params": [],
     "generator": false
   },
   {
-    "__docId__": 15,
+    "__docId__": 16,
     "kind": "typedef",
     "static": true,
     "variation": null,
@@ -843,7 +869,7 @@
     }
   },
   {
-    "__docId__": 16,
+    "__docId__": 17,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -856,7 +882,7 @@
       "http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages",
       "http://developers.gigya.com/display/GD/accounts.showScreenSet+JS"
     ],
-    "lineNumber": 197,
+    "lineNumber": 210,
     "params": [
       {
         "nullable": null,
@@ -968,7 +994,7 @@
     "generator": false
   },
   {
-    "__docId__": 17,
+    "__docId__": 18,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -980,7 +1006,7 @@
     "see": [
       "http://developers.gigya.com/display/GD/accounts.hideScreenSet+JS"
     ],
-    "lineNumber": 220,
+    "lineNumber": 233,
     "params": [
       {
         "nullable": null,
@@ -1020,7 +1046,7 @@
     "generator": false
   },
   {
-    "__docId__": 18,
+    "__docId__": 19,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1032,7 +1058,7 @@
     "see": [
       "http://developers.gigya.com/display/GD/accounts.addEventHandlers+JS"
     ],
-    "lineNumber": 239,
+    "lineNumber": 252,
     "params": [
       {
         "nullable": null,
@@ -1098,7 +1124,7 @@
     "generator": false
   },
   {
-    "__docId__": 19,
+    "__docId__": 20,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1110,7 +1136,7 @@
     "see": [
       "http://developers.gigya.com/display/GD/accounts.getAccountInfo+JS"
     ],
-    "lineNumber": 257,
+    "lineNumber": 270,
     "params": [
       {
         "nullable": null,
@@ -1136,7 +1162,7 @@
     "generator": false
   },
   {
-    "__docId__": 20,
+    "__docId__": 21,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1145,7 +1171,7 @@
     "longname": "src/index.js~GigyaWrapper#checkLoggedInStatus",
     "access": null,
     "description": "Check if a user is logged in",
-    "lineNumber": 276,
+    "lineNumber": 289,
     "params": [],
     "return": {
       "nullable": null,
@@ -1158,7 +1184,7 @@
     "generator": false
   },
   {
-    "__docId__": 21,
+    "__docId__": 22,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1170,7 +1196,7 @@
     "see": [
       "http://developers.gigya.com/display/GD/socialize.postBookmark+JS"
     ],
-    "lineNumber": 311,
+    "lineNumber": 324,
     "params": [
       {
         "nullable": null,
@@ -1192,7 +1218,7 @@
         "defaultValue": "'facebook'",
         "defaultRaw": "'facebook'",
         "name": "opts.provider",
-        "description": "Which provider to share too. Possible providers: 'facebook', 'twitter', 'googleplus', 'microsoft', 'linkedin', delicious', 'googlebookmarks', 'whatsapp', 'myaol', 'baidu', 'stumbleupon', 'qq', 'sina', 'renren', 'mixi', 'friendfeed', 'reddit', 'boxnet', 'tumblr', 'plaxo', 'technorati', 'faves', 'newsvine', 'fark', 'mixx', 'bitly', 'hatena', 'amazon', 'gmail', 'netlog', 'evernote', 'aolmail', 'currenttv', 'yardbarker', 'blinklist', 'diigo', 'dropjack', 'segnalo', 'linkagogo', 'kaboodle', 'skimbit', 'formspring', 'vkontakte', 'spiceworks', 'viadeo', 'nkpl', 'xing', 'tuenti', 'odnoklassniki', 'douban', 'pinterest'."
+        "description": "Which provider to share too. See gigya docs for possible providers."
       },
       {
         "nullable": null,
@@ -1308,7 +1334,7 @@
         "defaultValue": "'feed'",
         "defaultRaw": "'feed'",
         "name": "opts.facebookDialogType",
-        "description": "Applicable only for sharing through Facebook. This parameter determines which Facebook dialog will appear when clicking the share button. When using the 'share' dialog, it is required to implement open graph tags on your page."
+        "description": "Applicable only for sharing through Facebook. This parameter determines which Facebook dialog will appear when clicking the share button."
       },
       {
         "nullable": null,
@@ -1324,7 +1350,7 @@
     "generator": false
   },
   {
-    "__docId__": 22,
+    "__docId__": 23,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1336,7 +1362,7 @@
     "see": [
       "http://developers.gigya.com/display/GD/accounts.getSchema+JS"
     ],
-    "lineNumber": 353,
+    "lineNumber": 366,
     "params": [],
     "return": {
       "nullable": null,
@@ -1349,7 +1375,7 @@
     "generator": false
   },
   {
-    "__docId__": 23,
+    "__docId__": 24,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1361,7 +1387,7 @@
     "see": [
       "http://developers.gigya.com/display/GD/accounts.getPolicies+JS"
     ],
-    "lineNumber": 368,
+    "lineNumber": 381,
     "params": [
       {
         "nullable": null,
@@ -1397,7 +1423,7 @@
     "generator": false
   },
   {
-    "__docId__": 24,
+    "__docId__": 25,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1409,7 +1435,7 @@
     "see": [
       "http://developers.gigya.com/display/GD/accounts.getScreenSets+JS"
     ],
-    "lineNumber": 387,
+    "lineNumber": 400,
     "params": [
       {
         "nullable": null,
@@ -1431,7 +1457,7 @@
         "defaultValue": "'Default-RegistrationLogin'",
         "defaultRaw": "'Default-RegistrationLogin'",
         "name": "opts.screenSetIDs",
-        "description": "Either a comma separated list or a JSON array of identifiers of the screen-sets to be retrieved. When not specified returns all the screen-sets associated with the site."
+        "description": "Either a comma separated list or a JSON array of identifiers of the screen-sets to be retrieved."
       },
       {
         "nullable": null,
@@ -1457,7 +1483,7 @@
     "generator": false
   },
   {
-    "__docId__": 25,
+    "__docId__": 26,
     "kind": "method",
     "static": false,
     "variation": null,
@@ -1466,7 +1492,7 @@
     "longname": "src/index.js~GigyaWrapper#_cb",
     "access": null,
     "description": "Private callback function for the promises used in this class.",
-    "lineNumber": 406,
+    "lineNumber": 419,
     "params": [
       {
         "nullable": null,
@@ -1510,7 +1536,7 @@
     "generator": false
   },
   {
-    "__docId__": 27,
+    "__docId__": 28,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1523,7 +1549,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 28,
+    "__docId__": 29,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1536,7 +1562,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 29,
+    "__docId__": 30,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1549,7 +1575,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 30,
+    "__docId__": 31,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1562,7 +1588,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 31,
+    "__docId__": 32,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1575,7 +1601,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 32,
+    "__docId__": 33,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1588,7 +1614,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 33,
+    "__docId__": 34,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1601,7 +1627,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 34,
+    "__docId__": 35,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1614,7 +1640,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 35,
+    "__docId__": 36,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1627,7 +1653,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 36,
+    "__docId__": 37,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1640,7 +1666,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 37,
+    "__docId__": 38,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1653,7 +1679,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 38,
+    "__docId__": 39,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1666,7 +1692,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 39,
+    "__docId__": 40,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1679,7 +1705,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 40,
+    "__docId__": 41,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1692,7 +1718,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 41,
+    "__docId__": 42,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1705,7 +1731,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 42,
+    "__docId__": 43,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1718,7 +1744,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 43,
+    "__docId__": 44,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1731,7 +1757,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 44,
+    "__docId__": 45,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1744,7 +1770,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 45,
+    "__docId__": 46,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1757,7 +1783,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 46,
+    "__docId__": 47,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1770,7 +1796,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 47,
+    "__docId__": 48,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1783,7 +1809,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 48,
+    "__docId__": 49,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1796,7 +1822,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 49,
+    "__docId__": 50,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1809,7 +1835,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 50,
+    "__docId__": 51,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1822,7 +1848,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 51,
+    "__docId__": 52,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1835,7 +1861,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 52,
+    "__docId__": 53,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1848,7 +1874,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 53,
+    "__docId__": 54,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1861,7 +1887,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 54,
+    "__docId__": 55,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1874,7 +1900,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 55,
+    "__docId__": 56,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1887,7 +1913,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 56,
+    "__docId__": 57,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1900,7 +1926,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 57,
+    "__docId__": 58,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1913,7 +1939,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 58,
+    "__docId__": 59,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1926,7 +1952,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 59,
+    "__docId__": 60,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1939,7 +1965,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 60,
+    "__docId__": 61,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1952,7 +1978,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 61,
+    "__docId__": 62,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1965,7 +1991,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 62,
+    "__docId__": 63,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1978,7 +2004,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 63,
+    "__docId__": 64,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -1991,7 +2017,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 64,
+    "__docId__": 65,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2004,7 +2030,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 65,
+    "__docId__": 66,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2017,7 +2043,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 66,
+    "__docId__": 67,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2030,7 +2056,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 67,
+    "__docId__": 68,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2043,7 +2069,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 68,
+    "__docId__": 69,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2056,7 +2082,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 69,
+    "__docId__": 70,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2069,7 +2095,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 70,
+    "__docId__": 71,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2082,7 +2108,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 71,
+    "__docId__": 72,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2095,7 +2121,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 72,
+    "__docId__": 73,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2108,7 +2134,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 73,
+    "__docId__": 74,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2121,7 +2147,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 75,
+    "__docId__": 76,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2134,7 +2160,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 76,
+    "__docId__": 77,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2147,7 +2173,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 77,
+    "__docId__": 78,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2160,7 +2186,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 78,
+    "__docId__": 79,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2173,7 +2199,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 79,
+    "__docId__": 80,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2186,7 +2212,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 80,
+    "__docId__": 81,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2199,7 +2225,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 81,
+    "__docId__": 82,
     "kind": "external",
     "static": true,
     "variation": null,
@@ -2212,7 +2238,7 @@
     "builtinExternal": true
   },
   {
-    "__docId__": 82,
+    "__docId__": 83,
     "kind": "external",
     "static": true,
     "variation": null,

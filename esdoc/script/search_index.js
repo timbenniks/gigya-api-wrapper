@@ -414,6 +414,12 @@ window.esdocSearchIndex = [
     "method"
   ],
   [
+    "src/index.js~gigyawrapper#https",
+    "class/src/index.js~GigyaWrapper.html#instance-member-https",
+    "src/index.js~GigyaWrapper#https",
+    "member"
+  ],
+  [
     "src/index.js~gigyawrapper#lang",
     "class/src/index.js~GigyaWrapper.html#instance-member-lang",
     "src/index.js~GigyaWrapper#lang",

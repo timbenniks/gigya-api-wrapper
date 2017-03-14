@@ -147,8 +147,7 @@ export default class GigyaWrapper{
 
       if( this.https ){
         script.src = `https://cdns.gigya.com/js/gigya.js?apiKey=${this.apiKey}&amp;lang=${this.lang}`;
-      }
-      else {
+      } else {
         script.src = `http://cdn.gigya.com/js/gigya.js?apiKey=${this.apiKey}&amp;lang=${this.lang}`;
       }
 
@@ -240,11 +239,12 @@ export default class GigyaWrapper{
    * @param {string} [opts.containerID=this.containerID] - DOM id of screen set container. Defaults to {@link GigyaWrapper#containerID}
    * @param {string} [opts.startScreen=&quot;gigya-login-screen&quot;] - The screen to show.
    * @param {CustomLang} [opts.customLang] - An object which overrules the error message for the selected language.
-   * @param {function} [opts.onBeforeScreenLoad] - This function is fired on before screen load.
+   * @param {function} [opts.onBeforeScreenLoad] - This function is fired before a screen is loaded.
    * @param {function} [opts.onAfterScreenLoad] - This function is fired onAfterScreenLoad.
    * @param {function} [opts.onAfterSubmit] - This function is fired onAfterSubmit.
    * @param {function} [opts.onBeforeSubmit] - This function is fired onBeforeSubmit.
    * @param {function} [opts.onFieldChanged] - This function is fired onFieldChanged.
+   * @param {function} [opts.onError] - This function is fired there is an error.
    * @see http://developers.gigya.com/display/GD/Customizing+Screen-Set+Error+Messages
    * @see http://developers.gigya.com/display/GD/accounts.showScreenSet+JS
    */
@@ -258,7 +258,8 @@ export default class GigyaWrapper{
       onAfterScreenLoad: this.noop,
       onAfterSubmit: this.noop,
       onBeforeSubmit: this.noop,
-      onFieldChanged: this.noop
+      onFieldChanged: this.noop,
+      onError: this.noop
     }, opts );
 
     this.gigya.accounts.showScreenSet( screensetProps );

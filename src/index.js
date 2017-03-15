@@ -102,7 +102,7 @@ export default class GigyaWrapper{
 
       script.type = 'text/javascript';
       script.async = true;
-      script.text = `{lang: "${this.lang}", autoLogin: ${this.autoLogin}`;
+      script.text = `{lang: "${this.lang}", autoLogin: ${this.autoLogin}}`;
 
       if( this.https ){
         script.src = `https://cdns.gigya.com/js/gigya.js?apiKey=${this.apiKey}&lang=${this.lang}`;
